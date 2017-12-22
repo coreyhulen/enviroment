@@ -1,0 +1,79 @@
+execute pathogen#infect()
+filetype plugin indent on
+
+"
+" Learning
+"
+set foldlevelstart=0                    " start with everything folded
+" don't rely on the esc key
+"inoremap <esc> <nop>
+" don't rely on the arrow keys
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
+
+"
+" Baisc
+"
+set autoread                            " reload files when changed on disk
+set clipboard=unnamed                   " yank and past with the system clipboard
+set directory-=.                        " dont't store sawpfiles in current dir
+
+"
+" Colors
+"
+syntax enable
+set background=dark
+colorscheme molokai
+
+
+"
+" Line Numbers
+"
+set number                               " show line numbers
+set relativenumber                       " show relative numers to make jumping easier
+
+
+"
+" Folding
+"
+set foldenable                           " enable code folding
+set foldnestmax=10                       " don't fold base 10 deep
+set foldmethod=indent                    " make sure we can fold code blocks
+nnoremap <space> za
+
+"
+" Custom Key Bindings
+"
+" Remap the esc key
+":inoremap jk <esc>
+
+"
+" Searching
+"
+set wildignore=log/**,node_modules/**,target/**,tmp/**,*.rbc,vendor/**
+set wildmenu                              " show a navigable menu for tab completion
+set wildmode=longest,list,full
+
+"
+" Keyboard Shortcuts
+"
+let mapleader = ','
+nnoremap <leader>b :CtrlPBuffer<CR>
+nnoremap <leader>t :CtrlP<CR>
+nnoremap <leader>T :CtrlPClearCache<CR>:CtrlP<CR>
+
+"
+" Plugin Settings
+"
+let g:ctrlp_match_window = 'order:ttb,max:20'
+
+" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+  " Use Ag over Grep
+    set grepprg=ag\ --nogroup\ --nocolor
+
+    " Use ag in CtrlP for listing files. Lightning fast and respect .gitignore
+     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
