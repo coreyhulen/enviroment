@@ -1,7 +1,7 @@
 
-# OSX Development Environment
+# Development Environment
 ------------------------------------------------------------------
-My super simple repo and script to setup my development environment
+My super simple repo and script to setup my development environment.  It should work for both OSX and linux.
 
 `make` - download and installs my environment
 
