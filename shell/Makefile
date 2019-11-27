@@ -4,17 +4,19 @@ all: install
 
 .download:
 	@git clone git://github.com/robbyrussell/oh-my-zsh.git
+	@git clone https://github.com/powerline/fonts.git --depth=1
 	@touch $@
 
 install: .download
+	./fonts/install.sh
 	@cp -Rf oh-my-zsh ~/.oh-my-zsh
 	@cp -f zshrc.zsh-template ~/.zshrc
 	@chsh -s /bin/zsh
 
 clean:
+	@rm -rf fonts
 	@rm -rf ~/.oh-my-zsh
-	@rm -f ~/.zshrc
-	@chsh -s /bin/bash
+	@rm -f ~/.zshrc	
 
 nuke: clean
 	@rm -f .download
