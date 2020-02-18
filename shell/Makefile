@@ -12,6 +12,8 @@ install: .download
 	@cp -Rf oh-my-zsh ~/.oh-my-zsh
 	@cp -f zshrc.zsh-template ~/.zshrc
 	@chsh -s /bin/zsh
+	@export GOPATH=$HOME/Projects
+	@mkdir -p $GOPATH $GOPATH/src $GOPATH/pkg $GOPATH/bin
 
 clean:
 	@rm -rf fonts
