@@ -14,6 +14,8 @@ install: .download
 	@chsh -s /bin/zsh
 	@export GOPATH=$HOME/Projects
 	@mkdir -p $GOPATH $GOPATH/src $GOPATH/pkg $GOPATH/bin
+	@mkdir -p ~/Library/KeyBindings
+	cp DefaultKeyBinding.dict ~/Library/KeyBindings
 
 clean:
 	@rm -rf fonts
