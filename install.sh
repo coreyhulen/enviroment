@@ -65,14 +65,17 @@ fi
 ./shell/fonts/install.sh
 cp -Rf ./shell/oh-my-zsh ~/.oh-my-zsh
 cp -f ./shell/zshrc.zsh-template ~/.zshrc
+echo "Finished installing shell extensions\n"
+
+echo "Installing various paths and files extensions..."
 export GOPATH=$HOME/Projects
 mkdir -p $GOPATH $GOPATH/src $GOPATH/pkg $GOPATH/bin
-echo "Finished installing shell extensions\n"
+echo "Finished installing various paths and files extensions\n"
 
 echo ""
 echo "MANUAL STEPS NEEDED:"
-echo "1. For Mission Control"
-echo "   System Preferences > Mission Control"
+echo "1. For Mission Control on Mac"
+echo "   Goto System Preferences > Mission Control"
 echo "   map 'Mission Control:' to 'Mouse Button 4'"
 echo "   map 'Show Desktop:' to 'Mouse Button 5'"
 echo ""
