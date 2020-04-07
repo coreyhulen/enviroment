@@ -22,12 +22,12 @@ else
 fi
 
 echo "Installing Homebrew modules..."
-#brew update
-#brew upgrade
-#brew install wget
-#brew install go
-#brew install node
-#brew install libpng
+brew update
+brew upgrade
+brew install wget
+brew install go
+brew install node
+brew install libpng
 echo "Finished installing Homebrew modules\n"
 
 if [ ! -d /Applications/Docker.app ]; then

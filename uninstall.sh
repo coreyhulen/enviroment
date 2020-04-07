@@ -5,10 +5,10 @@ echo "Uninstall your Mac enviroment"
 echo ""
 
 echo "Uninstalling Homebrew modules..."
-#brew uninstall wget
-#brew uninstall go
-#brew uninstall node
-#brew uninstall libpng
+brew uninstall wget
+brew uninstall go
+brew uninstall node
+brew uninstall libpng
 echo "Finished uninstalling Homebrew modules\n"
 
 
