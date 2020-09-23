@@ -1,82 +1,182 @@
 
-#!/usr/bin/env zsh
+#!/bin/sh
+#
+# This script should be run via curl:
+#   sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/master/install.sh)"
 
-echo "\nInstalling your Mac enviroment\n"
+# Default settings
+ENVIRO=${ENVIRO:-~/.enviroment}
+REPO=${REPO:-coreyhulen/enviroment}
+REMOTE=${REMOTE:-https://github.com/${REPO}.git}
+BRANCH=${BRANCH:-master}
 
-if [ ! -d /Applications/Karabiner-Elements.app ]; then
-    echo "FAIL - Missing directory for /Applications/Karabiner-Elements.app"
-    echo "       You need to install the Mac keyboard remapper from"
-    echo "       https://karabiner-elements.pqrs.org/https://karabiner-elements.pqrs.org/" >&2
+command_exists() {
+	command -v "$@" >/dev/null 2>&1
+}
+
+info() {
+	echo ${BLUE}"$@"${RESET} >&2
+}
+
+warn() {
+	echo ${YELLOW}"Warning: $@"${RESET} >&2
+}
+
+error() {
+	echo ${RED}"Error: $@"${RESET} >&2
+}
+
+underline() {
+	echo "$(printf '\033[4m')$@$(printf '\033[24m')"
+}
+
+setup_color() {
+	# Only use colors if connected to a terminal
+	if [ -t 1 ]; then
+		RED=$(printf '\033[31m')
+		GREEN=$(printf '\033[32m')
+		YELLOW=$(printf '\033[33m')
+		BLUE=$(printf '\033[34m')
+		BOLD=$(printf '\033[1m')
+		RESET=$(printf '\033[m')
+	else
+		RED=""
+		GREEN=""
+		YELLOW=""
+		BLUE=""
+		BOLD=""
+		RESET=""
+	fi
+}
+
+setup_getgitrepo() {
+    command_exists git || {
+		error "Git is not installed"
+		exit 1
+	}
+
+    if [ -d $ENVIRO ]; then
+        warn "$ENVIRO directory already exists.  Attempting to remove."
+        rm -rf "${ENVIRO}"
+    fi
+
+    git clone -c core.eol=lf -c core.autocrlf=false \
+		-c fsck.zeroPaddedFilemode=ignore \
+		-c fetch.fsck.zeroPaddedFilemode=ignore \
+		-c receive.fsck.zeroPaddedFilemode=ignore \
+		--depth=1 --branch "$BRANCH" "$REMOTE" "$ENVIRO" || {
+		error "git clone of enviroment repo failed"
+		exit 1
+	}
+}
+
+setup_homebrew() {
+    if ! command_exists brew; then
+		warn "Homebrew is not installed. Attempting to install"
+        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    else
+        info "Detected Homebrew as installed"
+	fi
+
+    info "Installing Homebrew modules..."
+    brew update
+    brew upgrade
+    brew install wget
+    brew install go
+    brew install node
+    brew install libpng
+    brew cask install iterm2
+    info "Finished installing Homebrew modules"
+}
+
+setup_docker() {
+    if ! command_exists docker; then
+        error "Failed to find Docker for Mac. Please install from https://hub.docker.com/editions/community/docker-ce-desktop-mac/"        
+        exit 1
+    else
+        info "Detected Docker as installed"
+    fi
+}
+
+setup_vim() {
+    info "Installing vim extensions"
+    if [ ! -d $ENVIRO/vim/bundle ]; then
+        git clone https://github.com/ctrlpvim/ctrlp.vim.git $ENVIRO/vim/bundle/ctrlp.vim
+    fi
+
+    mkdir -p ~/.vim
+    cp -Rf $ENVIRO/vim/autoload ~/.vim/
+    cp -Rf $ENVIRO/vim/colors ~/.vim/
+    cp -Rf $ENVIRO/vim/bundle ~/.vim/
+    cp -f $ENVIRO/vim/vimrc.vim-template ~/.vimrc    
+}
+
+setup_oh_my_zsh() {
+    info "Installing oh-my-zsh extensions"
+    if [ ! -d ~/.oh-my-zsh ]; then
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+
+    cp -f $ENVIRO/shell/zshrc.zsh-template ~/.zshrc    
+
+    info "Installing font extensions"
+    if [ ! -d $ENVIRO/shell/fonts ]; then
+        git clone https://github.com/powerline/fonts.git --depth=1 $ENVIRO/shell/fonts
+    fi
+
+    $ENVIRO/shell/fonts/install.sh
+}
+
+setup_dev_paths() {
+    info "Installing various paths and files extensions"
+    export GOPATH=$HOME/Projects
+    mkdir -p $GOPATH $GOPATH/src $GOPATH/pkg $GOPATH/bin
+}
+
+setup_manual_steps() {
     echo ""
-    exit 1
-else
-    echo "Detected Karabiner-Elements as installed\n"
-fi
-
-if [ ! -d /usr/local/Homebrew ]; then
-    echo "Installing Homebrew..."
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    warn "MANUAL STEPS NEEDED:"
+    warn "1. For Mission Control on Mac"
+    warn "   Goto System Preferences > Mission Control"
+    warn "   map 'Mission Control:' to 'Mouse Button 4'"
+    warn "   map 'Show Desktop:' to 'Mouse Button 5'"
     echo ""
-else
-    echo "Detected Homebrew as installed\n"
-fi
+    warn "2. Setup caps lock as control key"
+    warn "   Goto System Preferences > Keyboard > Modifier Keys"
+    warn "   Change Caps Lock > Control"    
+}
 
-echo "Installing Homebrew modules..."
-brew update
-brew upgrade
-brew install wget
-brew install go
-brew install node
-brew install libpng
-echo "Finished installing Homebrew modules\n"
+main() {
+    # Run as unattended if stdin is closed
+	if [ ! -t 0 ]; then
+		RUNZSH=no
+		CHSH=no
+	fi
 
-if [ ! -d /Applications/Docker.app ]; then
-    echo "FAIL - Missing directory for /Applications/Docker.app"
-    echo "       You need to install Docker for Mac from"
-    echo "       https://hub.docker.com/editions/community/docker-ce-desktop-mac/" >&2
+	# Parse arguments
+	while [ $# -gt 0 ]; do
+		case $1 in
+			--unattended) RUNZSH=no; CHSH=no ;;
+			--skip-chsh) CHSH=no ;;
+			--keep-zshrc) KEEP_ZSHRC=yes ;;
+		esac
+		shift
+	done
+
+	setup_color
+
+    info "Installing your Mac enviroment"
+
+    setup_getgitrepo
+    setup_homebrew
+    setup_docker
+    setup_vim
+    setup_oh_my_zsh
+    setup_dev_paths
+    setup_manual_steps
+
     echo ""
-    exit 1
-else
-    echo "Detected Docker as installed\n"
-fi
+    echo "${GREEN}Installation complete!${RESET}"
+}
 
-echo "Installing keyboard remapper perferences to make mac work like windows..."
-mkdir -p ~/.config/karabiner/
-cp -f keyboard/karabiner.json ~/.config/karabiner/
-echo "Finished installing keyboard remapper\n"
-
-echo "Installing vim extensions..."
-if [ ! -d ./vim/bundle ]; then
-    git clone https://github.com/ctrlpvim/ctrlp.vim.git ./vim/bundle/ctrlp.vim
-fi
-
-mkdir -p ~/.vim
-cp -Rf vim/autoload ~/.vim/
-cp -Rf vim/colors ~/.vim/
-cp -Rf vim/bundle ~/.vim/
-cp -f vim/vimrc.vim-template ~/.vimrc
-echo "Finished installing vim extensions\n"
-
-echo "Installing shell extensions..."
-if [ ! -d ./shell/oh-my-zsh ]; then
-    git clone git://github.com/robbyrussell/oh-my-zsh.git ./shell/oh-my-zsh
-	git clone https://github.com/powerline/fonts.git --depth=1 ./shell/fonts
-fi
-./shell/fonts/install.sh
-cp -Rf ./shell/oh-my-zsh ~/.oh-my-zsh
-cp -f ./shell/zshrc.zsh-template ~/.zshrc
-echo "Finished installing shell extensions\n"
-
-echo "Installing various paths and files extensions..."
-export GOPATH=$HOME/Projects
-mkdir -p $GOPATH $GOPATH/src $GOPATH/pkg $GOPATH/bin
-echo "Finished installing various paths and files extensions\n"
-
-echo ""
-echo "MANUAL STEPS NEEDED:"
-echo "1. For Mission Control on Mac"
-echo "   Goto System Preferences > Mission Control"
-echo "   map 'Mission Control:' to 'Mouse Button 4'"
-echo "   map 'Show Desktop:' to 'Mouse Button 5'"
-echo ""
-echo "ALL FINISHED!"
+main "$@"
