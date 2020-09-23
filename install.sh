@@ -145,7 +145,8 @@ setup_manual_steps() {
     warn "   Goto System Preferences > Keyboard > Modifier Keys"
     warn "   Change Caps Lock > Control"
     echo ""
-    earch "3. Install Divvy Window Mgt for Mac from the MacStore"
+    warn "3. Install Divvy Window Mgt for Mac from the MacStore"
+    echo ""
 }
 
 main() {
