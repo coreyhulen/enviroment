@@ -143,7 +143,9 @@ setup_manual_steps() {
     echo ""
     warn "2. Setup caps lock as control key"
     warn "   Goto System Preferences > Keyboard > Modifier Keys"
-    warn "   Change Caps Lock > Control"    
+    warn "   Change Caps Lock > Control"
+    echo ""
+    earch "3. Install Divvy Window Mgt for Mac from the MacStore"
 }
 
 main() {
