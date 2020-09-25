@@ -1,32 +1,29 @@
-# VSCode's integrated terminal default colors
-# Primary and dimmed colors needed
-
+# Colors (Molokai Dark)
 colors:
-    # Default colors
-    primary:
-      background: '#1e1e1e' #Background from Dark Theme
-  
-    # Normal colors
-    normal:
-      black:   '#000000'
-      red:     '#cd3131'
-      green:   '#0dbc79'
-      yellow:  '#e5e510'
-      blue:    '#2472c8'
-      magenta: '#bc3fbc'
-      cyan:    '#11a8cd'
-      white:   '#e5e5e5'
-  
-    # Bright colors
-    bright:
-      black:   '#666666'
-      red:     '#f14c4c'
-      green:   '#23d18b'
-      yellow:  '#f5f543'
-      blue:    '#3b8eea'
-      magenta: '#d670d6'
-      cyan:    '#29b8db'
-      white:   '#e5e5e5'
+  # Default colors
+  primary:
+    background: '#1B1D1E'
+    foreground: '#F8F8F2'
+  # Normal colors
+  normal:
+    black:   '#333333'
+    red:     '#C4265E'
+    green:   '#86B42B'
+    yellow:  '#B3B42B'
+    blue:    '#6A7EC8'
+    magenta: '#8C6BC8'
+    cyan:    '#56ADBC'
+    white:   '#E3E3DD'
+  # Bright colors
+  bright:
+    black:   '#666666'
+    red:     '#F92672'
+    green:   '#A6E22E'
+    yellow:  '#E2E22E'
+    blue:    '#819AFF'
+    magenta: '#AE81FF'
+    cyan:    '#66D9EF'
+    white:   '#F8F8F2'
 
 # Font configuration (changes require restart)
 font:
