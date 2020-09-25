@@ -56,11 +56,9 @@ setup_getgitrepo() {
 	}
 
     if [ -d $ENVIRO ]; then
-        warn "$ENVIRO directory already exists.  Attempting to remove."
-        rm -rf "${ENVIRO}"
-    fi
-
-    git clone -c core.eol=lf -c core.autocrlf=false \
+        warn "$ENVIRO directory already exists. Skipping download."
+    else
+	git clone -c core.eol=lf -c core.autocrlf=false \
 		-c fsck.zeroPaddedFilemode=ignore \
 		-c fetch.fsck.zeroPaddedFilemode=ignore \
 		-c receive.fsck.zeroPaddedFilemode=ignore \
@@ -68,6 +66,7 @@ setup_getgitrepo() {
 		error "git clone of enviroment repo failed"
 		exit 1
 	}
+    fi
 }
 
 setup_homebrew() {
@@ -85,7 +84,6 @@ setup_homebrew() {
     brew install go
     brew install node
     brew install libpng
-    brew cask install iterm2
     info "Finished installing Homebrew modules"
 }
 
