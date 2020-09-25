@@ -76,6 +76,11 @@ remove_oh_my_zsh() {
     info "Finished uninstalling shell extensions"
 }
 
+remove_tmux() {
+    info "Uninstalling tmux extensions"
+    rm -f ~/.tmux.conf
+}
+
 remove_enviroment() {
     info "Uninstalling enviroment"
     if [ -d $ENVIRO ]; then
@@ -114,6 +119,7 @@ main() {
     remove_homebrew
     remove_vim
     remove_oh_my_zsh
+    remove_tmux
     remove_enviroment
     remove_manual_steps
 

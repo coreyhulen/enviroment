@@ -127,6 +127,11 @@ setup_oh_my_zsh() {
     $ENVIRO/shell/fonts/install.sh
 }
 
+setup_tmux() {
+    info "Installing tmux extensions"
+    cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf
+}
+
 setup_dev_paths() {
     info "Installing various paths and files extensions"
     export GOPATH=$HOME/Projects
@@ -175,6 +180,7 @@ main() {
     setup_docker
     setup_vim
     setup_oh_my_zsh
+    setup_tmux
     setup_dev_paths
     setup_manual_steps
 
