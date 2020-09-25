@@ -133,7 +133,8 @@ setup_tmux() {
 
 setup_alacritty() {
     info "Installing alacritty extensions"
-    cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf
+    mkdir -p ~/.config/alacritty
+    cp -f $ENVIRO/shell/alacritty.yml ~/.config/alacritty/alacritty.yml
 }
 
 setup_dev_paths() {
@@ -184,6 +185,7 @@ main() {
     setup_docker
     setup_vim
     setup_oh_my_zsh
+    setup_alacritty
     setup_tmux
     setup_dev_paths
     setup_manual_steps

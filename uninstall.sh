@@ -81,6 +81,11 @@ remove_tmux() {
     rm -f ~/.tmux.conf
 }
 
+remove_alacritty() {
+    info "Uninstalling alacritty extensions"
+    rm -f ~/.config/alacritty/alacritty.yml
+}
+
 remove_enviroment() {
     info "Uninstalling enviroment"
     if [ -d $ENVIRO ]; then
@@ -119,6 +124,7 @@ main() {
     remove_homebrew
     remove_vim
     remove_oh_my_zsh
+    remove_alacritty
     remove_tmux
     remove_enviroment
     remove_manual_steps
