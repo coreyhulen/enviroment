@@ -131,6 +131,11 @@ setup_tmux() {
     cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf
 }
 
+setup_alacritty() {
+    info "Installing alacritty extensions"
+    cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf
+}
+
 setup_dev_paths() {
     info "Installing various paths and files extensions"
     export GOPATH=$HOME/Projects
