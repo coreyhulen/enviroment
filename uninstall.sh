@@ -55,7 +55,7 @@ remove_homebrew() {
     brew uninstall go
     brew uninstall node
     brew uninstall libpng
-    brew uninstall iterm2
+    brew uninstall tmux
     info "Finished uninstalling Homebrew modules"
 }
 

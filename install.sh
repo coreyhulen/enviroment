@@ -84,6 +84,7 @@ setup_homebrew() {
     brew install go
     brew install node
     brew install libpng
+    brew install tmux
     info "Finished installing Homebrew modules"
 }
 
