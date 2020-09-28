@@ -75,7 +75,7 @@ setup_homebrew() {
         bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     else
         info "Detected Homebrew as installed"
-	fi
+	fi 
 
     info "Installing Homebrew modules..."
     brew update
@@ -95,6 +95,32 @@ setup_docker() {
     else
         info "Detected Docker as installed"
     fi
+}
+
+setup_karabiner() {
+    if [ ! -d /Applications/Karabiner-Elements.app ]; then
+        error "Failed to find Karabiner for Mac. Please install from https://karabiner-elements.pqrs.org/"        
+        exit 1
+    else
+        info "Detected Karabiner as installed"
+    fi
+
+    info "Installing Karabiner extensions"
+    mkdir -p ~/.config/karabiner/
+    cp -f $ENVIRO/keyboard/karabiner.json ~/.config/karabiner/
+}
+
+setup_alacritty() {
+    if [ ! -d /Applications/Alacritty.app ]; then
+        error "Failed to find Alacritty for Mac. Please install from https://github.com/alacritty/alacritty/releases"        
+        exit 1
+    else
+        info "Detected Alacritty as installed"
+    fi
+
+    info "Installing alacritty extensions"
+    mkdir -p ~/.config/alacritty
+    cp -f $ENVIRO/shell/alacritty.yml ~/.config/alacritty/alacritty.yml
 }
 
 setup_vim() {
@@ -129,12 +155,6 @@ setup_oh_my_zsh() {
 setup_tmux() {
     info "Installing tmux extensions"
     cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf
-}
-
-setup_alacritty() {
-    info "Installing alacritty extensions"
-    mkdir -p ~/.config/alacritty
-    cp -f $ENVIRO/shell/alacritty.yml ~/.config/alacritty/alacritty.yml
 }
 
 setup_dev_paths() {
@@ -183,9 +203,10 @@ main() {
     setup_getgitrepo
     setup_homebrew
     setup_docker
+    setup_karabiner
+    setup_alacritty
     setup_vim
     setup_oh_my_zsh
-    setup_alacritty
     setup_tmux
     setup_dev_paths
     setup_manual_steps
