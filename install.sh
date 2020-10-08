@@ -198,7 +198,7 @@ main() {
 
 	setup_color
 
-    info "Installing your Mac enviroment"
+    info "Installing your Mac environment"
 
     setup_getgitrepo
     setup_homebrew
