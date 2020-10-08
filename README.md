@@ -3,7 +3,7 @@
 ------------------------------------------------------------------
 My super simple repo and script to setup my Mac development environment.
 
-My enviroment is installed by running the following command in your terminal from within your hom directory `cd ~`
+My enviroment is installed by running the following command in your terminal from within your home directory `cd ~`
 
 Install Cmd:
 ```
