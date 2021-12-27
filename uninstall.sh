@@ -56,6 +56,15 @@ remove_homebrew() {
     brew uninstall node
     brew uninstall libpng
     brew uninstall tmux
+    brew uninstall --cask visual-studio-code
+    brew uninstall --cask zoom
+    brew uninstall --cask firefox
+    brew uninstall --cask lastpass
+    brew uninstall --cask steam
+    brew uninstall --cask docker
+    brew uninstall --cask figma
+    brew uninstall --cask rectangle
+    brew uninstall --cask alacritty
     info "Finished uninstalling Homebrew modules"
 }
 

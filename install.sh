@@ -85,29 +85,95 @@ setup_homebrew() {
     brew install node
     brew install libpng
     brew install tmux
+    brew install --cask visual-studio-code
+    brew install --cask zoom
+    brew install --cask firefox
+    brew install --cask lastpass
+    brew install --cask steam
+    brew install --cask docker
+    brew install --cask figma
+    brew install --cask rectangle
+    brew install --cask alacritty
     info "Finished installing Homebrew modules"
 }
 
-setup_docker() {
-    if ! command_exists docker; then
-        error "Failed to find Docker for Mac. Please install from https://hub.docker.com/editions/community/docker-ce-desktop-mac/"        
-        exit 1
-    else
-        info "Detected Docker as installed"
-    fi
-}
+setup_preferences() {
+    info "Expand save and print panel by default"
+    defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+    defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+    defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+    defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+    defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
-setup_karabiner() {
-    if [ ! -d /Applications/Karabiner-Elements.app ]; then
-        error "Failed to find Karabiner for Mac. Please install from https://karabiner-elements.pqrs.org/"        
-        exit 1
-    else
-        info "Detected Karabiner as installed"
-    fi
+    info "Save to disk (not to iCloud) by default"
+    defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
-    info "Installing Karabiner extensions"
-    mkdir -p ~/.config/karabiner/
-    cp -f $ENVIRO/keyboard/karabiner.json ~/.config/karabiner/
+    info "Avoid creating .DS_Store files on network volumes"
+    defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+    defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+    info "Disable smart quotes and dashes as they cause problems when typing code"
+    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+
+    info "Disable press-and-hold for keys in favor of key repeat"
+    defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+
+    info "Adjust Finder settings"
+    defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+    defaults write com.apple.finder ShowPathbar -bool true
+    defaults write com.apple.finder ShowStatusBar -bool true
+    defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+    defaults write com.apple.finder FXPreferredViewStyle -string "Nlmv"
+    defaults write com.apple.finder NewWindowTarget -string "PfLo" && \
+    defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}"
+
+    info "Adjust Dock settings"
+    defaults write com.apple.dock show-process-indicators -bool true
+    defaults write com.apple.dock autohide -bool true
+    defaults write com.apple.dock mru-spaces -bool false
+
+    info "Show status bar and path bar"
+    defaults write com.apple.finder ShowStatusBar -bool true
+    defaults write com.apple.finder ShowPathbar -bool true
+
+    info "Disable the warning when changing a file extension"
+    defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+    info "Show the ~/Library folder"
+    chflags nohidden ~/Library
+
+    info "Set where screenshots go"
+    defaults write com.apple.screencapture location -string "$HOME/Desktop/Screenshots"
+
+    info "Safari enable Safari Developer Settings"
+    defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+    defaults write com.apple.Safari IncludeDevelopMenu -bool true
+    defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+    defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+    defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+
+    info "Chrome disable the all too sensitive backswipe on Trackpads and Magic Mice"
+    defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
+    defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
+    defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
+    defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool false
+
+    info "Chrome use the system print dialog and expand dialog by default"
+    defaults write com.google.Chrome DisablePrintPreview -bool true
+    defaults write com.google.Chrome.canary DisablePrintPreview -bool true
+    defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
+    defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
+
+    info "Menu item settings"
+    defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+    defaults write com.apple.menuextra.battery ShowTime -string "NO"
+
+    info "Git settings"
+    git config --global url."git@github.com:".insteadOf https://github.com/
+    git config --global credential.helper osxkeychain
+    git config --global user.email "corey@hulen.com"
+    git config --global user.name "coreyhulen"
 }
 
 setup_alacritty() {
@@ -160,7 +226,7 @@ setup_tmux() {
 setup_dev_paths() {
     info "Installing various paths and files extensions"
     export GOPATH=$HOME/Projects
-    mkdir -p $GOPATH $GOPATH/src $GOPATH/pkg $GOPATH/bin
+    mkdir -p $GOPATH $GOPATH/src/github.com/coreyhulen $GOPATH/src/github.com/mattermost $GOPATH/pkg $GOPATH/bin
 }
 
 setup_manual_steps() {
@@ -174,8 +240,6 @@ setup_manual_steps() {
     warn "2. Setup caps lock as control key"
     warn "   Goto System Preferences > Keyboard > Modifier Keys"
     warn "   Change Caps Lock > Control"
-    echo ""
-    warn "3. Install Divvy Window Mgt for Mac from the MacStore"
     echo ""
 }
 
@@ -202,8 +266,6 @@ main() {
 
     setup_getgitrepo
     setup_homebrew
-    setup_docker
-    setup_karabiner
     setup_alacritty
     setup_vim
     setup_oh_my_zsh
