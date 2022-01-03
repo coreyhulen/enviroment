@@ -85,6 +85,8 @@ setup_homebrew() {
     brew install node
     brew install libpng
     brew install tmux
+    brew install openssl@1.1
+    brew install protobuf
     brew install --cask visual-studio-code
     brew install --cask zoom
     brew install --cask firefox
@@ -94,7 +96,25 @@ setup_homebrew() {
     brew install --cask figma
     brew install --cask rectangle
     brew install --cask alacritty
+    brew install --cask gimp
+    brew install --cask flutter
+    brew install --cask karabiner-elements
+    brew install --cask mattermost
+
     info "Finished installing Homebrew modules"
+}
+
+setup_karabiner() {
+    if [ ! -d /Applications/Karabiner-Elements.app ]; then
+        error "Failed to find Karabiner for Mac. Please install from https://karabiner-elements.pqrs.org/"        
+        exit 1
+    else
+        info "Detected Karabiner as installed"
+    fi
+
+    info "Installing Karabiner extensions"
+    mkdir -p ~/.config/karabiner/
+    cp -f $ENVIRO/keyboard/karabiner.json ~/.config/karabiner/
 }
 
 setup_preferences() {

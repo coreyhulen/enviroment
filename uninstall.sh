@@ -56,6 +56,8 @@ remove_homebrew() {
     brew uninstall node
     brew uninstall libpng
     brew uninstall tmux
+    brew uninstall openssl@1.1
+    brew uninstall protobuf
     brew uninstall --cask visual-studio-code
     brew uninstall --cask zoom
     brew uninstall --cask firefox
@@ -65,6 +67,11 @@ remove_homebrew() {
     brew uninstall --cask figma
     brew uninstall --cask rectangle
     brew uninstall --cask alacritty
+    brew uninstall --cask gimp
+    brew uninstall --cask flutter
+    brew uninstall --cask karabiner-elements
+    brew uninstall --cask mattermost
+    
     info "Finished uninstalling Homebrew modules"
 }
 
@@ -93,6 +100,11 @@ remove_tmux() {
 remove_alacritty() {
     info "Uninstalling alacritty extensions"
     rm -f ~/.config/alacritty/alacritty.yml
+}
+
+remove_karabiner() {
+    info "Uninstalling karabiner extensions"
+    rm -f ~/.config/karabiner/karabiner.json
 }
 
 remove_enviroment() {
@@ -134,6 +146,7 @@ main() {
     remove_vim
     remove_oh_my_zsh
     remove_alacritty
+    remove_karabiner
     remove_tmux
     remove_enviroment
     remove_manual_steps
