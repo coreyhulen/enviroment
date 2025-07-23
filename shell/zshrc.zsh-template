@@ -23,24 +23,16 @@ bindkey '^R' history-incremental-search-backward
 # Better vim mode experience
 export KEYTIMEOUT=1  # Reduce delay when switching modes
 
-# Show vim mode in prompt
-function zle-line-init zle-keymap-select {
-    RPS1="${${KEYMAP/vicmd/[NORMAL]}/(main|viins)/[INSERT]}"
-    RPS2=$RPS1
-    zle reset-prompt
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
-
 # Directory navigation
 setopt AUTO_CD
 setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt PUSHD_SILENT
 
-# Prompt
-autoload -U colors && colors
-PROMPT='%{$fg[blue]%}%~%{$reset_color%} %# '
+# Prompt - using default zsh prompt
+# The default shows username@hostname:directory%
+# You can customize this by uncommenting and modifying the line below
+# PROMPT='%n@%m:%~%# '
 
 # Environment variables
 export GOPATH=$HOME/Projects

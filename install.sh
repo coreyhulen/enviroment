@@ -16,7 +16,7 @@ FAILED_ITEMS=""
 
 # Package lists
 BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd"
-BREW_CASKS="visual-studio-code zoom steam docker figma gimp mattermost iterm2 nikitabobko/tap/aerospace"
+BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -83,7 +83,7 @@ setup_color() {
 		RED=$(printf '\033[31m')
 		GREEN=$(printf '\033[32m')
 		YELLOW=$(printf '\033[33m')
-		BLUE=$(printf '\033[34m')
+		BLUE=$(printf '\033[36m')
 		BOLD=$(printf '\033[1m')
 		RESET=$(printf '\033[m')
 	else
@@ -261,12 +261,12 @@ setup_preferences() {
     info "Set where screenshots go"
     defaults write com.apple.screencapture location -string "$HOME/Desktop/Screenshots"
 
-    info "Safari enable Safari Developer Settings"
-    defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-    defaults write com.apple.Safari IncludeDevelopMenu -bool true
-    defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-    defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-    defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+    info "Safari enable Safari Developer Settings (Safari must be closed)"
+    defaults write com.apple.Safari IncludeInternalDebugMenu -bool true 2>/dev/null || warn "Could not set Safari debug menu"
+    defaults write com.apple.Safari IncludeDevelopMenu -bool true 2>/dev/null || warn "Could not set Safari develop menu"
+    defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true 2>/dev/null || warn "Could not set Safari WebKit developer extras"
+    defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true 2>/dev/null || warn "Could not set Safari WebKit2 developer extras"
+    defaults write NSGlobalDomain WebKitDeveloperExtras -bool true 2>/dev/null || warn "Could not set global WebKit developer extras"
 
     info "Chrome disable the all too sensitive backswipe on Trackpads and Magic Mice"
     defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
@@ -286,7 +286,7 @@ setup_preferences() {
 
     info "Git settings"
     git config --global url."git@github.com:".insteadOf https://github.com/
-    git config --global credential.helper osxkeychain
+    git config --global --replace-all credential.helper osxkeychain
     git config --global user.email "corey@hulen.com"
     git config --global user.name "coreyhulen"
     

@@ -17,7 +17,7 @@ REMOVE_HOMEBREW=false
 
 # Package lists (should match install.sh)
 BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd"
-BREW_CASKS="visual-studio-code zoom steam docker figma gimp mattermost iterm2 nikitabobko/tap/aerospace"
+BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -73,7 +73,7 @@ setup_color() {
 		RED=$(printf '\033[31m')
 		GREEN=$(printf '\033[32m')
 		YELLOW=$(printf '\033[33m')
-		BLUE=$(printf '\033[34m')
+		BLUE=$(printf '\033[36m')
 		BOLD=$(printf '\033[1m')
 		RESET=$(printf '\033[m')
 	else
@@ -124,7 +124,7 @@ remove_homebrew() {
     done
     
     # Also check for karabiner-elements, flutter which might have been installed
-    for extra_cask in "karabiner-elements" "flutter" "rectangle" "lastpass"; do
+    for extra_cask in "karabiner-elements" "flutter" "rectangle" "lastpass" "claude-code"; do
         if brew list --cask | grep -q "^${extra_cask}\$" 2>/dev/null; then
             info "Found additional cask: $extra_cask"
             if brew uninstall --cask $extra_cask 2>/dev/null; then
@@ -290,9 +290,8 @@ remove_preferences() {
 remove_manual_steps() {
     echo ""
     warn "MANUAL STEPS NEEDED:"
-    warn "1. Docker Desktop must be uninstalled manually from Applications folder"
-    warn "2. Some macOS preferences were not reverted to avoid disruption"
-    warn "3. Git user.name and user.email were preserved"
+    warn "1. Some macOS preferences were not reverted to avoid disruption"
+    warn "2. Git user.name and user.email were preserved"
 }
 
 main() {
