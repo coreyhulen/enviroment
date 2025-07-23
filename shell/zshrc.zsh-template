@@ -70,3 +70,6 @@ alias cdch="cd $GOPATH/src/github.com/coreyhulen"
 if [ -f ~/.zshrc.local ]; then
     source ~/.zshrc.local
 fi
+
+# Initialize Starship prompt
+eval "$(starship init zsh)"

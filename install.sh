@@ -15,8 +15,8 @@ INSTALLED_ITEMS=""
 FAILED_ITEMS=""
 
 # Package lists
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd"
-BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code"
+BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship"
+BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
