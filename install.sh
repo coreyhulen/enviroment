@@ -10,8 +10,55 @@ REPO=${REPO:-coreyhulen/enviroment}
 REMOTE=${REMOTE:-https://github.com/${REPO}.git}
 BRANCH=${BRANCH:-master}
 
+# Installation tracking
+INSTALLED_ITEMS=""
+FAILED_ITEMS=""
+
+# Package lists
+BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd"
+BREW_CASKS="visual-studio-code zoom steam docker figma gimp mattermost iterm2 nikitabobko/tap/aerospace"
+
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
+}
+
+track_installation() {
+    local item="$1"
+    local status="$2"
+    
+    if [ "$status" = "success" ]; then
+        INSTALLED_ITEMS="${INSTALLED_ITEMS}\n  ✓ $item"
+    else
+        FAILED_ITEMS="${FAILED_ITEMS}\n  ✗ $item"
+    fi
+}
+
+check_system_requirements() {
+    info "Checking system requirements..."
+    
+    # Check if running on macOS
+    if [ "$(uname)" != "Darwin" ]; then
+        error "This script is designed for macOS only"
+        exit 1
+    fi
+    
+    # Check macOS version
+    OS_VERSION=$(sw_vers -productVersion)
+    info "Detected macOS version: $OS_VERSION"
+    
+    # Check for required commands
+    if ! command_exists curl; then
+        error "curl is required but not installed"
+        exit 1
+    fi
+    
+    # Check disk space (require at least 5GB free)
+    FREE_SPACE=$(df -g / | awk 'NR==2 {print $4}')
+    if [ "$FREE_SPACE" -lt 5 ]; then
+        warn "Low disk space: ${FREE_SPACE}GB free (recommend at least 5GB)"
+    fi
+    
+    info "System requirements check passed"
 }
 
 info() {
@@ -57,6 +104,7 @@ setup_getgitrepo() {
 
     if [ -d $ENVIRO ]; then
         warn "$ENVIRO directory already exists. Skipping download."
+        track_installation "Environment repository" "success"
     else
 	git clone -c core.eol=lf -c core.autocrlf=false \
 		-c fsck.zeroPaddedFilemode=ignore \
@@ -64,60 +112,107 @@ setup_getgitrepo() {
 		-c receive.fsck.zeroPaddedFilemode=ignore \
 		--depth=1 --branch "$BRANCH" "$REMOTE" "$ENVIRO" || {
 		error "git clone of enviroment repo failed"
+		track_installation "Environment repository" "failed"
 		exit 1
 	}
+	track_installation "Environment repository" "success"
     fi
 }
 
 setup_homebrew() {
     if ! command_exists brew; then
 		warn "Homebrew is not installed. Attempting to install"
-        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        
+        # Install Homebrew
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || {
+            error "Failed to install Homebrew"
+            exit 1
+        }
+        
+        # Detect processor architecture and add Homebrew to PATH
+        if [ "$(uname -m)" = "arm64" ]; then
+            # Apple Silicon Mac
+            BREW_PREFIX="/opt/homebrew"
+        else
+            # Intel Mac
+            BREW_PREFIX="/usr/local"
+        fi
+        
+        # Add Homebrew to current session PATH
+        eval "$($BREW_PREFIX/bin/brew shellenv)"
+        
+        # Verify Homebrew installation
+        if ! command_exists brew; then
+            error "Homebrew installation failed - brew command not found"
+            exit 1
+        fi
+        
+        info "Homebrew installed successfully"
     else
         info "Detected Homebrew as installed"
 	fi 
 
     info "Installing Homebrew modules..."
-    brew update
-    brew upgrade
-    brew install wget
-    brew install go
-    brew install node
-    brew install libpng
-    brew install tmux
-    brew install openssl@1.1
-    brew install protobuf
-    brew install --cask visual-studio-code
-    brew install --cask zoom
-    brew install --cask firefox
-    brew install --cask lastpass
-    brew install --cask steam
-    brew install --cask docker
-    brew install --cask figma
-    brew install --cask rectangle
-    brew install --cask alacritty
-    brew install --cask gimp
-    brew install --cask flutter
-    brew install --cask karabiner-elements
-    brew install --cask mattermost
+    
+    brew update || warn "Failed to update Homebrew"
+    brew upgrade || warn "Failed to upgrade Homebrew packages"
+    
+    # Add required tap for aerospace
+    brew tap nikitabobko/tap || warn "Failed to add nikitabobko/tap"
+    
+    # Install command line tools
+    for package in $BREW_PACKAGES; do
+        if brew install $package; then
+            track_installation "$package" "success"
+        else
+            warn "Failed to install $package"
+            track_installation "$package" "failed"
+        fi
+    done
+    
+    # Install GUI applications
+    for cask in $BREW_CASKS; do
+        if brew install --cask $cask; then
+            track_installation "$cask (cask)" "success"
+        else
+            warn "Failed to install $cask"
+            track_installation "$cask (cask)" "failed"
+        fi
+    done
 
     info "Finished installing Homebrew modules"
 }
 
 setup_karabiner() {
     if [ ! -d /Applications/Karabiner-Elements.app ]; then
-        error "Failed to find Karabiner for Mac. Please install from https://karabiner-elements.pqrs.org/"        
-        exit 1
+        if command_exists brew; then
+            info "Karabiner-Elements not found. Installing via Homebrew..."
+            if brew install --cask karabiner-elements; then
+                track_installation "karabiner-elements (auto-install)" "success"
+            else
+                error "Failed to install Karabiner-Elements"
+                track_installation "karabiner-elements" "failed"
+                return 1
+            fi
+        else
+            warn "Karabiner-Elements not found. Please install from https://karabiner-elements.pqrs.org/"
+            track_installation "karabiner-elements" "failed"
+            return 1
+        fi
     else
         info "Detected Karabiner as installed"
     fi
 
     info "Installing Karabiner extensions"
     mkdir -p ~/.config/karabiner/
-    cp -f $ENVIRO/keyboard/karabiner.json ~/.config/karabiner/
+    cp -f $ENVIRO/keyboard/karabiner.json ~/.config/karabiner/ && \
+        track_installation "Karabiner configuration" "success" || \
+        track_installation "Karabiner configuration" "failed"
 }
 
 setup_preferences() {
+    info "Configuring macOS preferences..."
+    
     info "Expand save and print panel by default"
     defaults write NSGlobalDomain AppleShowAllExtensions -bool true
     defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
@@ -194,59 +289,76 @@ setup_preferences() {
     git config --global credential.helper osxkeychain
     git config --global user.email "corey@hulen.com"
     git config --global user.name "coreyhulen"
-}
-
-setup_alacritty() {
-    if [ ! -d /Applications/Alacritty.app ]; then
-        error "Failed to find Alacritty for Mac. Please install from https://github.com/alacritty/alacritty/releases"        
-        exit 1
-    else
-        info "Detected Alacritty as installed"
-    fi
-
-    info "Installing alacritty extensions"
-    mkdir -p ~/.config/alacritty
-    cp -f $ENVIRO/shell/alacritty.yml ~/.config/alacritty/alacritty.yml
+    
+    track_installation "macOS preferences" "success"
 }
 
 setup_vim() {
-    info "Installing vim extensions"
-    if [ ! -d $ENVIRO/vim/bundle ]; then
-        git clone https://github.com/ctrlpvim/ctrlp.vim.git $ENVIRO/vim/bundle/ctrlp.vim
+    info "Installing LazyVim for Neovim"
+    
+    # Check if neovim is installed
+    if ! command_exists nvim; then
+        error "Neovim is not installed. Please ensure Homebrew packages were installed successfully."
+        track_installation "LazyVim" "failed"
+        return 1
     fi
-
-    mkdir -p ~/.vim
-    cp -Rf $ENVIRO/vim/autoload ~/.vim/
-    cp -Rf $ENVIRO/vim/colors ~/.vim/
-    cp -Rf $ENVIRO/vim/bundle ~/.vim/
-    cp -f $ENVIRO/vim/vimrc.vim-template ~/.vimrc    
+    
+    # Backup existing Neovim configuration
+    if [ -d ~/.config/nvim ]; then
+        info "Backing up existing Neovim configuration"
+        mv ~/.config/nvim ~/.config/nvim.backup.$(date +%Y%m%d_%H%M%S)
+    fi
+    
+    if [ -d ~/.local/share/nvim ]; then
+        mv ~/.local/share/nvim ~/.local/share/nvim.backup.$(date +%Y%m%d_%H%M%S)
+    fi
+    
+    if [ -d ~/.local/state/nvim ]; then
+        mv ~/.local/state/nvim ~/.local/state/nvim.backup.$(date +%Y%m%d_%H%M%S)
+    fi
+    
+    if [ -d ~/.cache/nvim ]; then
+        mv ~/.cache/nvim ~/.cache/nvim.backup.$(date +%Y%m%d_%H%M%S)
+    fi
+    
+    # Clone LazyVim starter configuration
+    git clone https://github.com/LazyVim/starter ~/.config/nvim && \
+        rm -rf ~/.config/nvim/.git && \
+        track_installation "LazyVim" "success" || \
+        track_installation "LazyVim" "failed"
+    
+    info "LazyVim installation complete. Run 'nvim' to start Neovim and complete setup."
 }
 
-setup_oh_my_zsh() {
-    info "Installing oh-my-zsh extensions"
-    if [ ! -d ~/.oh-my-zsh ]; then
-        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+setup_shell() {
+    info "Installing shell configuration"
+    
+    # Install zsh configuration
+    if [ -f ~/.zshrc ]; then
+        info "Backing up existing .zshrc"
+        cp ~/.zshrc ~/.zshrc.backup.$(date +%Y%m%d_%H%M%S)
     fi
-
-    cp -f $ENVIRO/shell/zshrc.zsh-template ~/.zshrc    
-
-    info "Installing font extensions"
-    if [ ! -d $ENVIRO/shell/fonts ]; then
-        git clone https://github.com/powerline/fonts.git --depth=1 $ENVIRO/shell/fonts
-    fi
-
-    $ENVIRO/shell/fonts/install.sh
+    
+    cp -f $ENVIRO/shell/zshrc.zsh-template ~/.zshrc && \
+        track_installation "zsh configuration" "success" || \
+        track_installation "zsh configuration" "failed"
 }
 
 setup_tmux() {
     info "Installing tmux extensions"
-    cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf
+    
+    cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf && \
+        track_installation "tmux configuration" "success" || \
+        track_installation "tmux configuration" "failed"
 }
 
 setup_dev_paths() {
     info "Installing various paths and files extensions"
+    
     export GOPATH=$HOME/Projects
-    mkdir -p $GOPATH $GOPATH/src/github.com/coreyhulen $GOPATH/src/github.com/mattermost $GOPATH/pkg $GOPATH/bin
+    mkdir -p $GOPATH $GOPATH/src/github.com/coreyhulen $GOPATH/src/github.com/mattermost $GOPATH/pkg $GOPATH/bin && \
+        track_installation "development directories" "success" || \
+        track_installation "development directories" "failed"
 }
 
 setup_manual_steps() {
@@ -276,21 +388,81 @@ main() {
 			--unattended) RUNZSH=no; CHSH=no ;;
 			--skip-chsh) CHSH=no ;;
 			--keep-zshrc) KEEP_ZSHRC=yes ;;
+			--help)
+				echo "Usage: $0 [options]"
+				echo "Options:"
+				echo "  --unattended    Run without prompts"
+				echo "  --skip-chsh     Skip changing default shell"
+				echo "  --keep-zshrc    Keep existing .zshrc"
+				echo "  --help          Show this help message"
+				exit 0
+				;;
 		esac
 		shift
 	done
 
 	setup_color
-
+    
     info "Installing your Mac environment"
-
+    echo ""
+    
+    # Check system requirements first
+    check_system_requirements
+    echo ""
+    
+    # Progress tracking
+    TOTAL_STEPS=8
+    CURRENT_STEP=0
+    
+    # Run installation steps
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up environment repository..."
     setup_getgitrepo
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Homebrew..."
     setup_homebrew
-    setup_alacritty
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Neovim with LazyVim..."
     setup_vim
-    setup_oh_my_zsh
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up shell configuration..."
+    setup_shell
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up tmux..."
     setup_tmux
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up development paths..."
     setup_dev_paths
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up macOS preferences..."
+    setup_preferences
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Karabiner..."
+    setup_karabiner
+    
+    # Show installation summary
+    echo ""
+    echo "${BOLD}Installation Summary:${RESET}"
+    
+    if [ -n "$INSTALLED_ITEMS" ]; then
+        echo "${GREEN}Successfully installed:${RESET}"
+        echo "$INSTALLED_ITEMS"
+    fi
+    
+    if [ -n "$FAILED_ITEMS" ]; then
+        echo ""
+        echo "${RED}Failed to install:${RESET}"
+        echo "$FAILED_ITEMS"
+    fi
+    
+    # Show manual steps if needed
     setup_manual_steps
 
     echo ""
