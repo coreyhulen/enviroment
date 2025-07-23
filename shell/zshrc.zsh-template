@@ -29,6 +29,11 @@ setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt PUSHD_SILENT
 
+# Set window title to current directory
+precmd() {
+    print -Pn "\e]0;%~\a"
+}
+
 # Prompt - using default zsh prompt
 # The default shows username@hostname:directory%
 # You can customize this by uncommenting and modifying the line below
@@ -51,6 +56,8 @@ alias la='ls -A'
 alias l='ls -CF'
 alias ..='cd ..'
 alias ...='cd ../..'
+alias vi='nvim'
+alias vim='nvim'
 
 # Git aliases
 alias gs='git status'
