@@ -154,15 +154,15 @@ setup_homebrew() {
 
     info "Installing Homebrew modules..."
     
-    brew update || warn "Failed to update Homebrew"
-    brew upgrade || warn "Failed to upgrade Homebrew packages"
+    brew update --quiet || warn "Failed to update Homebrew"
+    brew upgrade --quiet || warn "Failed to upgrade Homebrew packages"
     
     # Add required tap for aerospace
     brew tap nikitabobko/tap || warn "Failed to add nikitabobko/tap"
     
     # Install command line tools
     for package in $BREW_PACKAGES; do
-        if brew install $package; then
+        if brew install --quiet $package; then
             track_installation "$package" "success"
         else
             warn "Failed to install $package"
@@ -172,7 +172,7 @@ setup_homebrew() {
     
     # Install GUI applications
     for cask in $BREW_CASKS; do
-        if brew install --cask $cask; then
+        if brew install --cask --quiet $cask; then
             track_installation "$cask (cask)" "success"
         else
             warn "Failed to install $cask"
@@ -187,7 +187,7 @@ setup_karabiner() {
     if [ ! -d /Applications/Karabiner-Elements.app ]; then
         if command_exists brew; then
             info "Karabiner-Elements not found. Installing via Homebrew..."
-            if brew install --cask karabiner-elements; then
+            if brew install --cask --quiet karabiner-elements; then
                 track_installation "karabiner-elements (auto-install)" "success"
             else
                 error "Failed to install Karabiner-Elements"
@@ -352,6 +352,22 @@ setup_tmux() {
         track_installation "tmux configuration" "failed"
 }
 
+setup_aerospace() {
+    info "Installing Aerospace configuration"
+    
+    # Check if Aerospace is installed
+    if [ ! -d "/Applications/AeroSpace.app" ] && ! command_exists aerospace; then
+        warn "AeroSpace is not installed. Configuration will be copied but may not be used until AeroSpace is installed."
+    fi
+    
+    # Copy configuration file
+    cp -f $ENVIRO/shell/aerospace.toml ~/.aerospace.toml && \
+        track_installation "Aerospace configuration" "success" || \
+        track_installation "Aerospace configuration" "failed"
+    
+    info "Aerospace configuration installed to ~/.aerospace.toml"
+}
+
 setup_dev_paths() {
     info "Installing various paths and files extensions"
     
@@ -411,7 +427,7 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=8
+    TOTAL_STEPS=9
     CURRENT_STEP=0
     
     # Run installation steps
@@ -434,6 +450,10 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up tmux..."
     setup_tmux
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Aerospace..."
+    setup_aerospace
     
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up development paths..."

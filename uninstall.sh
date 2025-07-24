@@ -249,6 +249,17 @@ remove_tmux() {
     fi
 }
 
+remove_aerospace() {
+    info "Uninstalling Aerospace configuration"
+    
+    if [ -f ~/.aerospace.toml ]; then
+        rm -f ~/.aerospace.toml
+        track_removal "Aerospace configuration" "success"
+    else
+        track_removal "Aerospace configuration (not found)" "success"
+    fi
+}
+
 remove_karabiner() {
     info "Uninstalling karabiner extensions"
     
@@ -342,7 +353,7 @@ main() {
     fi
     
     # Progress tracking
-    TOTAL_STEPS=7
+    TOTAL_STEPS=8
     CURRENT_STEP=0
     
     # Run removal steps
@@ -365,6 +376,10 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing tmux configuration..."
     remove_tmux
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Aerospace configuration..."
+    remove_aerospace
     
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Reverting preferences..."
