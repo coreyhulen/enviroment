@@ -17,7 +17,7 @@ setw -g mouse on
 
 # True color support
 set -g default-terminal "tmux-256color"
-set -ag terminal-overrides ",xterm-256color:RGB"
+set-option -ag terminal-overrides ",xterm-256color:RGB"
 
 bind-key : command-prompt
 bind-key r refresh-client
@@ -100,7 +100,7 @@ set -g visual-activity on
 set-option -g repeat-time 0
 
 # Set escape time to 0 for better Neovim experience
-set-sg escape-time 0
+set -sg escape-time 0
 
 # List of plugins
 set -g @plugin 'tmux-plugins/tpm'
