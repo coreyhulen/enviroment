@@ -16,7 +16,7 @@ FAILED_ITEMS=""
 
 # Package lists
 BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship"
-BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font"
+BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -184,23 +184,11 @@ setup_homebrew() {
 }
 
 setup_karabiner() {
+    info "Installing Karabiner configuration"
+    
+    # Check if Karabiner-Elements is installed
     if [ ! -d /Applications/Karabiner-Elements.app ]; then
-        if command_exists brew; then
-            info "Karabiner-Elements not found. Installing via Homebrew..."
-            if brew install --cask --quiet karabiner-elements; then
-                track_installation "karabiner-elements (auto-install)" "success"
-            else
-                error "Failed to install Karabiner-Elements"
-                track_installation "karabiner-elements" "failed"
-                return 1
-            fi
-        else
-            warn "Karabiner-Elements not found. Please install from https://karabiner-elements.pqrs.org/"
-            track_installation "karabiner-elements" "failed"
-            return 1
-        fi
-    else
-        info "Detected Karabiner as installed"
+        warn "Karabiner-Elements is not installed. Configuration will be copied but may not be used until Karabiner-Elements is installed."
     fi
 
     info "Installing Karabiner extensions"
