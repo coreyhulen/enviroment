@@ -15,7 +15,7 @@ INSTALLED_ITEMS=""
 FAILED_ITEMS=""
 
 # Package lists
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship"
+BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide"
 BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements"
 
 command_exists() {
@@ -338,6 +338,19 @@ setup_tmux() {
     cp -f $ENVIRO/shell/tmux.conf-template ~/.tmux.conf && \
         track_installation "tmux configuration" "success" || \
         track_installation "tmux configuration" "failed"
+    
+    # Install tmux plugin manager (TPM)
+    if [ ! -d ~/.tmux/plugins/tpm ]; then
+        info "Installing tmux plugin manager"
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && \
+            track_installation "tmux plugin manager" "success" || \
+            track_installation "tmux plugin manager" "failed"
+    else
+        info "Tmux plugin manager already installed"
+        track_installation "tmux plugin manager (existing)" "success"
+    fi
+    
+    info "To install tmux plugins, start tmux and press 'prefix + I' (Ctrl-a + I)"
 }
 
 setup_aerospace() {
@@ -380,30 +393,6 @@ setup_manual_steps() {
 }
 
 main() {
-    # Run as unattended if stdin is closed
-	if [ ! -t 0 ]; then
-		RUNZSH=no
-		CHSH=no
-	fi
-
-	# Parse arguments
-	while [ $# -gt 0 ]; do
-		case $1 in
-			--unattended) RUNZSH=no; CHSH=no ;;
-			--skip-chsh) CHSH=no ;;
-			--keep-zshrc) KEEP_ZSHRC=yes ;;
-			--help)
-				echo "Usage: $0 [options]"
-				echo "Options:"
-				echo "  --unattended    Run without prompts"
-				echo "  --skip-chsh     Skip changing default shell"
-				echo "  --keep-zshrc    Keep existing .zshrc"
-				echo "  --help          Show this help message"
-				exit 0
-				;;
-		esac
-		shift
-	done
 
 	setup_color
     

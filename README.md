@@ -11,28 +11,43 @@ This script automatically installs and configures:
 
 ### Development Tools
 - **Neovim** with **LazyVim** - Modern text editor with powerful IDE features
-- **tmux** - Terminal multiplexer
-- **Git** - Version control system
+- **tmux** with plugin manager (TPM) - Terminal multiplexer with session persistence
+- **Git** - Version control system with optimized config
 - **Go** - Programming language
 - **Node.js** - JavaScript runtime
 - **Protobuf** - Protocol buffers
 - **ripgrep** & **fd** - Fast search tools
+- **wget** - Network downloader
+- **libpng** - PNG library
+
+### Shell Enhancements
+- **Starship** - Cross-shell prompt
+- **zsh-autosuggestions** - Fish-like autosuggestions for Zsh
+- **zsh-syntax-highlighting** - Fish shell-like syntax highlighting
+- **eza** - Modern replacement for 'ls'
+- **zoxide** - Smarter cd command that learns your habits
 
 ### Applications
 - **iTerm2** - Terminal emulator
 - **Karabiner-Elements** - Keyboard customizer
 - **Aerospace** - Window manager
+- **Claude Code** - AI coding assistant
+- **JetBrains Mono Nerd Font** - Developer font with icons
 
 ### Shell Configuration
-- Plain **Zsh** configuration with vim key bindings
-- Custom aliases and environment variables
-- Development shortcuts for Go projects
+- **Zsh** configuration with vim key bindings
+- Custom aliases for development productivity
+- Smart directory navigation with zoxide
+- File listing with icons via eza
+- Git shortcuts and development paths
 
 ### macOS Preferences
-- Finder enhancements
-- Dock improvements
-- Screenshot location customization
-- Developer-friendly defaults
+- Finder enhancements (show extensions, path bar, status bar)
+- Dock auto-hide and process indicators
+- Screenshot location set to ~/Desktop/Screenshots
+- Developer-friendly Safari settings
+- Disabled smart quotes for coding
+- Key repeat enabled (no press-and-hold)
 
 ## Installation
 
@@ -42,12 +57,15 @@ Run this command in your terminal:
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/master/install.sh)"
 ```
 
-### Installation Options
-
-- `--unattended` - Run without prompts
-- `--skip-chsh` - Skip changing default shell
-- `--keep-zshrc` - Keep existing .zshrc
-- `--help` - Show help message
+The installer will:
+1. Clone the environment repository to `~/.enviroment`
+2. Install Homebrew (if not present)
+3. Install all packages and applications
+4. Configure Neovim with LazyVim
+5. Set up shell with enhanced features
+6. Configure tmux with plugins
+7. Apply macOS preferences
+8. Set up development directories
 
 ## Uninstallation
 
@@ -59,37 +77,53 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/mast
 
 ### Uninstallation Options
 
-- `--unattended` - Run without prompts
-- `--remove-homebrew` - Completely uninstall Homebrew without prompting
-- `--help` - Show help message
+- `--remove-homebrew` - Completely uninstall Homebrew (by default, only packages are removed)
+
+## Key Features
+
+### Tmux Configuration
+- Leader key changed to `Ctrl-a`
+- Intuitive splits: `|` (horizontal) and `-` (vertical)
+- Vim-style pane navigation and resizing
+- Session persistence with resurrect and continuum
+- True color support
+- Seamless navigation with Neovim
+
+### Shell Aliases
+- `ls`, `ll`, `la`, `lt` - Enhanced file listing with icons
+- `cd` - Smart navigation that learns your habits
+- `gs`, `ga`, `gc`, `gp`, `gl`, `gd` - Git shortcuts
+- `vi`, `vim` - Opens Neovim
+- `cdmm`, `cdch` - Quick navigation to development directories
 
 ## Customization
 
 - Environment files are stored in `~/.enviroment`
 - Add personal zsh customizations to `~/.zshrc.local`
-- Karabiner configuration can be modified at `~/.config/karabiner/`
-- Neovim/LazyVim configuration is at `~/.config/nvim/`
+- Karabiner configuration at `~/.config/karabiner/`
+- Neovim/LazyVim configuration at `~/.config/nvim/`
+- Tmux configuration at `~/.tmux.conf`
 
 ## Manual Steps
 
-After installation, you may want to:
+After installation, you need to:
 
-1. Configure Mission Control mouse buttons in System Preferences
-2. Set Caps Lock as Control key in Keyboard preferences
-3. Launch Neovim (`nvim`) to complete LazyVim setup
+1. **Configure Mission Control**
+   - System Preferences > Mission Control
+   - Map 'Mission Control' to 'Mouse Button 4'
+   - Map 'Show Desktop' to 'Mouse Button 5'
 
-## Requirements
+2. **Set Caps Lock as Control**
+   - System Preferences > Keyboard > Modifier Keys
+   - Change Caps Lock to Control
 
-- macOS (Intel or Apple Silicon)
-- Internet connection
-- At least 5GB free disk space
-- Git (for initial clone)
+3. **Complete Neovim Setup**
+   - Run `nvim` to start Neovim
+   - LazyVim will automatically install plugins
 
-## What Gets Backed Up
-
-The scripts automatically create timestamped backups of:
-- `.zshrc` (during install and uninstall)
-- Neovim configuration (during install)
+4. **Install Tmux Plugins**
+   - Start tmux
+   - Press `Ctrl-a + I` to install plugins
 
 ## License
 

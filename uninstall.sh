@@ -16,7 +16,7 @@ FAILED_ITEMS=""
 REMOVE_HOMEBREW=false
 
 # Package lists (should match install.sh)
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship"
+BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide"
 BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements"
 
 command_exists() {
@@ -247,6 +247,14 @@ remove_tmux() {
     else
         track_removal "tmux configuration (not found)" "success"
     fi
+    
+    # Remove tmux plugin manager
+    if [ -d ~/.tmux/plugins ]; then
+        rm -rf ~/.tmux/plugins
+        track_removal "tmux plugin manager" "success"
+    else
+        track_removal "tmux plugin manager (not found)" "success"
+    fi
 }
 
 remove_aerospace() {
@@ -306,27 +314,10 @@ remove_manual_steps() {
 }
 
 main() {
-    # Run as unattended if stdin is closed
-	if [ ! -t 0 ]; then
-		RUNZSH=no
-		CHSH=no
-	fi
-
 	# Parse arguments
 	while [ $# -gt 0 ]; do
 		case $1 in
-			--unattended) RUNZSH=no; CHSH=no ;;
-			--skip-chsh) CHSH=no ;;
-			--keep-zshrc) KEEP_ZSHRC=yes ;;
 			--remove-homebrew) REMOVE_HOMEBREW=true ;;
-			--help)
-				echo "Usage: $0 [options]"
-				echo "Options:"
-				echo "  --unattended       Run without prompts"
-				echo "  --remove-homebrew  Completely uninstall Homebrew without prompting"
-				echo "  --help             Show this help message"
-				exit 0
-				;;
 		esac
 		shift
 	done
