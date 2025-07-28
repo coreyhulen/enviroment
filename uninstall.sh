@@ -268,6 +268,15 @@ remove_aerospace() {
     fi
 }
 
+remove_iterm2() {
+    info "Removing iTerm2 configuration"
+    
+    # We don't remove the actual preferences file since it might contain
+    # user customizations beyond our defaults. Just note that we're not removing it.
+    info "Note: iTerm2 preferences were not removed to preserve any custom settings"
+    track_removal "iTerm2 configuration (preserved)" "success"
+}
+
 remove_karabiner() {
     info "Uninstalling karabiner extensions"
     
@@ -344,7 +353,7 @@ main() {
     fi
     
     # Progress tracking
-    TOTAL_STEPS=8
+    TOTAL_STEPS=9
     CURRENT_STEP=0
     
     # Run removal steps
@@ -367,6 +376,10 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing tmux configuration..."
     remove_tmux
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing iTerm2 configuration..."
+    remove_iterm2
     
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Aerospace configuration..."

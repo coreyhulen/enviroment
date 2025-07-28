@@ -369,6 +369,35 @@ setup_aerospace() {
     info "Aerospace configuration installed to ~/.aerospace.toml"
 }
 
+setup_iterm2() {
+    info "Installing iTerm2 configuration"
+    
+    # Check if iTerm2 is installed
+    if [ ! -d "/Applications/iTerm.app" ]; then
+        warn "iTerm2 is not installed. Configuration will be copied but may not be used until iTerm2 is installed."
+    fi
+    
+    # Backup existing iTerm2 preferences if they exist
+    if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
+        info "Backing up existing iTerm2 preferences"
+        cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist.backup.$(date +%Y%m%d_%H%M%S)
+    fi
+    
+    # Copy iTerm2 preferences
+    if [ -f $ENVIRO/shell/iterm2-settings.plist ]; then
+        cp -f $ENVIRO/shell/iterm2-settings.plist ~/Library/Preferences/com.googlecode.iterm2.plist && \
+            track_installation "iTerm2 configuration" "success" || \
+            track_installation "iTerm2 configuration" "failed"
+        
+        # Clear the preferences cache
+        defaults read com.googlecode.iterm2 >/dev/null 2>&1
+        info "iTerm2 configuration installed. You may need to restart iTerm2 for changes to take effect."
+    else
+        warn "iTerm2 settings file not found in repository"
+        track_installation "iTerm2 configuration" "failed"
+    fi
+}
+
 setup_dev_paths() {
     info "Installing various paths and files extensions"
     
@@ -404,7 +433,7 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=9
+    TOTAL_STEPS=10
     CURRENT_STEP=0
     
     # Run installation steps
@@ -427,6 +456,10 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up tmux..."
     setup_tmux
+    
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up iTerm2..."
+    setup_iterm2
     
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Aerospace..."
