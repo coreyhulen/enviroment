@@ -385,9 +385,19 @@ setup_iterm2() {
     
     # Copy iTerm2 preferences
     if [ -f $ENVIRO/shell/iterm2-settings.plist ]; then
-        cp -f $ENVIRO/shell/iterm2-settings.plist ~/Library/Preferences/com.googlecode.iterm2.plist && \
+        # Create a temporary copy to convert
+        cp -f $ENVIRO/shell/iterm2-settings.plist /tmp/iterm2-settings-temp.plist
+        
+        # Convert from XML to binary format
+        plutil -convert binary1 /tmp/iterm2-settings-temp.plist
+        
+        # Copy the binary version to preferences
+        cp -f /tmp/iterm2-settings-temp.plist ~/Library/Preferences/com.googlecode.iterm2.plist && \
             track_installation "iTerm2 configuration" "success" || \
             track_installation "iTerm2 configuration" "failed"
+        
+        # Clean up temporary file
+        rm -f /tmp/iterm2-settings-temp.plist
         
         # Clear the preferences cache
         defaults read com.googlecode.iterm2 >/dev/null 2>&1
