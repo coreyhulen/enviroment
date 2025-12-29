@@ -48,6 +48,7 @@ This script automatically installs and configures:
 - Developer-friendly Safari settings
 - Disabled smart quotes for coding
 - Key repeat enabled (no press-and-hold)
+- F1-F12 keys set as standard function keys (no need to hold Fn)
 
 ## Installation
 
@@ -95,6 +96,20 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/mast
 - `gs`, `ga`, `gc`, `gp`, `gl`, `gd` - Git shortcuts
 - `vi`, `vim` - Opens Neovim
 - `cdmm`, `cdch` - Quick navigation to development directories
+
+### AeroSpace Window Manager
+- **Workspace Switching**: F1-F9 keys
+- **Move Window to Workspace**: Ctrl+F1-F9 (except Ctrl+F5)
+- **Window Navigation**: Alt+H/J/K/L (left/down/up/right)
+- **Window Movement**: Alt+Shift+H/J/K/L
+- **Window Resizing**: Alt+Minus/Equal (-50/+50 pixels)
+- **Layout Control**: Alt+Shift+Semicolon for service mode
+- **Workspace Auto-Assignment**:
+  - Workspace 1: Outlook, Mattermost
+  - Workspace 2: Chrome
+  - Workspace 3: OneNote, Obsidian
+  - Workspace 4: VS Code, iTerm2
+  - Workspace 6: Zoom, Teams
 
 ## Customization
 
