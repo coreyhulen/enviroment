@@ -69,14 +69,19 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'Mattermost.Desktop'
     run = 'move-node-to-workspace 1'
 
-# Force Visual Studio Code to always start on workspace 2
+# Force Visual Studio Code to always start on workspace 4
 [[on-window-detected]]
     if.app-id = 'com.microsoft.VSCode'
-    run = 'move-node-to-workspace 2'
+    run = 'move-node-to-workspace 4'
 
-# Force iTerm2 to always start on workspace 2
+# Force iTerm2 to always start on workspace 4
 [[on-window-detected]]
     if.app-id = 'com.googlecode.iterm2'
+    run = 'move-node-to-workspace 4'
+
+# Force Google Chrome to always start on workspace 2
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome'
     run = 'move-node-to-workspace 2'
 
 # Force Microsoft OneNote to always start on workspace 3
@@ -84,15 +89,20 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.microsoft.onenote.mac'
     run = 'move-node-to-workspace 3'
 
-# Force Zoom to always start on workspace 4
+# Force Obsidian to always start on workspace 3
+[[on-window-detected]]
+    if.app-id = 'md.obsidian'
+    run = 'move-node-to-workspace 3'
+
+# Force Zoom to always start on workspace 6
 [[on-window-detected]]
     if.app-id = 'us.zoom.xos'
-    run = 'move-node-to-workspace 4'
+    run = 'move-node-to-workspace 6'
 
-# Force Microsoft Teams to always start on workspace 4
+# Force Microsoft Teams to always start on workspace 6
 [[on-window-detected]]
     if.app-id = 'com.microsoft.teams2'
-    run = 'move-node-to-workspace 4'
+    run = 'move-node-to-workspace 6'
 
 # Make Finder windows always float
 [[on-window-detected]]
@@ -153,16 +163,6 @@ automatically-unhide-macos-hidden-apps = false
     alt-equal = 'resize smart +50'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-    alt-1 = 'workspace 1'
-    alt-2 = 'workspace 2'
-    alt-3 = 'workspace 3'
-    alt-4 = 'workspace 4'
-    alt-5 = 'workspace 5'
-    alt-6 = 'workspace 6'
-    alt-7 = 'workspace 7'
-    alt-8 = 'workspace 8'
-    alt-9 = 'workspace 9'
-
     f1 = 'workspace 1'
     f2 = 'workspace 2'
     f3 = 'workspace 3'
@@ -174,32 +174,14 @@ automatically-unhide-macos-hidden-apps = false
     f9 = 'workspace 9'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-    alt-shift-1 = 'move-node-to-workspace 1'
-    alt-shift-2 = 'move-node-to-workspace 2'
-    alt-shift-3 = 'move-node-to-workspace 3'
-    alt-shift-4 = 'move-node-to-workspace 4'
-    alt-shift-6 = 'move-node-to-workspace 6'
-    alt-shift-7 = 'move-node-to-workspace 7'
-    alt-shift-8 = 'move-node-to-workspace 8'
-    alt-shift-9 = 'move-node-to-workspace 9'
-
-    shift-f1 = 'move-node-to-workspace 1'
-    shift-f2 = 'move-node-to-workspace 2'
-    shift-f3 = 'move-node-to-workspace 3'
-    shift-f4 = 'move-node-to-workspace 4'
-    shift-f6 = 'move-node-to-workspace 6'
-    shift-f7 = 'move-node-to-workspace 7'
-    shift-f8 = 'move-node-to-workspace 8'
-    shift-f9 = 'move-node-to-workspace 9'
-
-    alt-f1 = 'move-node-to-workspace 1'
-    alt-f2 = 'move-node-to-workspace 2'
-    alt-f3 = 'move-node-to-workspace 3'
-    alt-f4 = 'move-node-to-workspace 4'
-    alt-f6 = 'move-node-to-workspace 6'
-    alt-f7 = 'move-node-to-workspace 7'
-    alt-f8 = 'move-node-to-workspace 8'
-    alt-f9 = 'move-node-to-workspace 9'
+    ctrl-f1 = 'move-node-to-workspace 1'
+    ctrl-f2 = 'move-node-to-workspace 2'
+    ctrl-f3 = 'move-node-to-workspace 3'
+    ctrl-f4 = 'move-node-to-workspace 4'
+    ctrl-f6 = 'move-node-to-workspace 6'
+    ctrl-f7 = 'move-node-to-workspace 7'
+    ctrl-f8 = 'move-node-to-workspace 8'
+    ctrl-f9 = 'move-node-to-workspace 9'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
