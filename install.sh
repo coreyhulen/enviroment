@@ -222,6 +222,9 @@ setup_preferences() {
     info "Disable press-and-hold for keys in favor of key repeat"
     defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
+    info "Use F1, F2, etc. keys as standard function keys"
+    defaults write -g com.apple.keyboard.fnState -boolean true
+
     info "Adjust Finder settings"
     defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
     defaults write com.apple.finder ShowPathbar -bool true

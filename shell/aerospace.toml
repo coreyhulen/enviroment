@@ -192,14 +192,14 @@ automatically-unhide-macos-hidden-apps = false
     shift-f8 = 'move-node-to-workspace 8'
     shift-f9 = 'move-node-to-workspace 9'
 
-    ctrl-f1 = 'move-node-to-workspace 1'
-    ctrl-f2 = 'move-node-to-workspace 2'
-    ctrl-f3 = 'move-node-to-workspace 3'
-    ctrl-f4 = 'move-node-to-workspace 4'
-    ctrl-f6 = 'move-node-to-workspace 6'
-    ctrl-f7 = 'move-node-to-workspace 7'
-    ctrl-f8 = 'move-node-to-workspace 8'
-    ctrl-f9 = 'move-node-to-workspace 9'
+    alt-f1 = 'move-node-to-workspace 1'
+    alt-f2 = 'move-node-to-workspace 2'
+    alt-f3 = 'move-node-to-workspace 3'
+    alt-f4 = 'move-node-to-workspace 4'
+    alt-f6 = 'move-node-to-workspace 6'
+    alt-f7 = 'move-node-to-workspace 7'
+    alt-f8 = 'move-node-to-workspace 8'
+    alt-f9 = 'move-node-to-workspace 9'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
