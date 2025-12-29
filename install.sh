@@ -16,7 +16,7 @@ FAILED_ITEMS=""
 
 # Package lists
 BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide"
-BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements"
+BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -116,6 +116,33 @@ setup_getgitrepo() {
 		exit 1
 	}
 	track_installation "Environment repository" "success"
+    fi
+}
+
+setup_xcode_cli() {
+    info "Checking for Xcode Command Line Tools..."
+    
+    # Check if Xcode Command Line Tools are already installed
+    if ! xcode-select -p &> /dev/null; then
+        info "Installing Xcode Command Line Tools..."
+        xcode-select --install
+        
+        # Wait for the installation to complete
+        info "Please complete the Xcode Command Line Tools installation in the popup window."
+        info "Press Enter to continue after installation is complete..."
+        read -r
+        
+        # Verify installation
+        if xcode-select -p &> /dev/null; then
+            track_installation "Xcode Command Line Tools" "success"
+        else
+            error "Xcode Command Line Tools installation failed"
+            track_installation "Xcode Command Line Tools" "failed"
+            exit 1
+        fi
+    else
+        info "Xcode Command Line Tools already installed"
+        track_installation "Xcode Command Line Tools (existing)" "success"
     fi
 }
 
@@ -446,10 +473,14 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=10
+    TOTAL_STEPS=11
     CURRENT_STEP=0
     
     # Run installation steps
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Xcode Command Line Tools..."
+    setup_xcode_cli
+    
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up environment repository..."
     setup_getgitrepo
