@@ -180,10 +180,10 @@ setup_homebrew() {
 	fi 
 
     info "Installing Homebrew modules..."
-    
+
     brew update --quiet || warn "Failed to update Homebrew"
     brew upgrade --quiet || warn "Failed to upgrade Homebrew packages"
-    
+
     # Add required tap for aerospace
     brew tap nikitabobko/tap || warn "Failed to add nikitabobko/tap"
     
@@ -303,49 +303,64 @@ setup_preferences() {
     defaults write com.apple.menuextra.battery ShowTime -string "NO"
 
     info "Git settings"
-    git config --global url."git@github.com:".insteadOf https://github.com/
     git config --global --replace-all credential.helper osxkeychain
     git config --global user.email "corey@hulen.com"
     git config --global user.name "coreyhulen"
-    
+
     track_installation "macOS preferences" "success"
+}
+
+setup_git_ssh() {
+    info "Configuring git to use SSH for GitHub..."
+    git config --global url."git@github.com:".insteadOf https://github.com/
+    track_installation "Git SSH configuration" "success"
 }
 
 setup_vim() {
     info "Installing LazyVim for Neovim"
-    
+
     # Check if neovim is installed
     if ! command_exists nvim; then
         error "Neovim is not installed. Please ensure Homebrew packages were installed successfully."
         track_installation "LazyVim" "failed"
         return 1
     fi
-    
-    # Backup existing Neovim configuration
-    if [ -d ~/.config/nvim ]; then
-        info "Backing up existing Neovim configuration"
-        mv ~/.config/nvim ~/.config/nvim.backup.$(date +%Y%m%d_%H%M%S)
+
+    # Check if LazyVim is already properly installed (has init.lua)
+    if [ -d ~/.config/nvim ] && [ -f ~/.config/nvim/init.lua ]; then
+        info "LazyVim already installed, skipping"
+        track_installation "LazyVim (existing)" "success"
+        return 0
     fi
-    
+
+    # Backup or remove existing Neovim configuration
+    if [ -d ~/.config/nvim ]; then
+        info "Removing incomplete/old Neovim configuration"
+        rm -rf ~/.config/nvim
+    fi
+
     if [ -d ~/.local/share/nvim ]; then
+        info "Backing up existing Neovim data"
         mv ~/.local/share/nvim ~/.local/share/nvim.backup.$(date +%Y%m%d_%H%M%S)
     fi
-    
+
     if [ -d ~/.local/state/nvim ]; then
         mv ~/.local/state/nvim ~/.local/state/nvim.backup.$(date +%Y%m%d_%H%M%S)
     fi
-    
+
     if [ -d ~/.cache/nvim ]; then
         mv ~/.cache/nvim ~/.cache/nvim.backup.$(date +%Y%m%d_%H%M%S)
     fi
-    
+
     # Clone LazyVim starter configuration
-    git clone https://github.com/LazyVim/starter ~/.config/nvim && \
-        rm -rf ~/.config/nvim/.git && \
-        track_installation "LazyVim" "success" || \
+    if git clone https://github.com/LazyVim/starter ~/.config/nvim; then
+        rm -rf ~/.config/nvim/.git
+        track_installation "LazyVim" "success"
+        info "LazyVim installation complete. Run 'nvim' to start Neovim and complete setup."
+    else
+        error "Failed to clone LazyVim starter"
         track_installation "LazyVim" "failed"
-    
-    info "LazyVim installation complete. Run 'nvim' to start Neovim and complete setup."
+    fi
 }
 
 setup_shell() {
@@ -372,9 +387,11 @@ setup_tmux() {
     # Install tmux plugin manager (TPM)
     if [ ! -d ~/.tmux/plugins/tpm ]; then
         info "Installing tmux plugin manager"
-        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && \
-            track_installation "tmux plugin manager" "success" || \
+        if git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm; then
+            track_installation "tmux plugin manager" "success"
+        else
             track_installation "tmux plugin manager" "failed"
+        fi
     else
         info "Tmux plugin manager already installed"
         track_installation "tmux plugin manager (existing)" "success"
@@ -464,16 +481,20 @@ setup_manual_steps() {
 main() {
 
 	setup_color
-    
+
+    # Temporarily remove git SSH rewriting to avoid issues during installation
+    # It will be re-added at the end of the script
+    git config --global --unset url."git@github.com:".insteadOf 2>/dev/null || true
+
     info "Installing your Mac environment"
     echo ""
-    
+
     # Check system requirements first
     check_system_requirements
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=11
+    TOTAL_STEPS=12
     CURRENT_STEP=0
     
     # Run installation steps
@@ -520,7 +541,11 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Karabiner..."
     setup_karabiner
-    
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Configuring Git SSH for GitHub..."
+    setup_git_ssh
+
     # Show installation summary
     echo ""
     echo "${BOLD}Installation Summary:${RESET}"
