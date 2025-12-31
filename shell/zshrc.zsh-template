@@ -50,6 +50,9 @@ export VISUAL='nvim'
 # Language environment
 export LANG=en_US.UTF-8
 
+# Skip rest of config for non-interactive shells (e.g., Claude Code)
+[[ $- != *i* ]] && return
+
 # Aliases
 # eza aliases (modern ls replacement)
 alias ls='eza --icons'
@@ -58,12 +61,11 @@ alias la='eza -a --icons'
 alias l='eza --icons'
 alias lt='eza --tree --level=2 --icons'
 
-# zoxide alias
-alias cd='z'
+# zoxide alias (defined after zoxide init below)
 
-# Directory navigation
-alias ..='z ..'
-alias ...='z ../..'
+# Directory navigation (using builtin cd, not zoxide)
+alias ..='builtin cd ..'
+alias ...='builtin cd ../..'
 
 # Editor aliases
 alias vi='nvim'
@@ -94,6 +96,7 @@ source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 
 # Initialize zoxide (smart cd)
 eval "$(zoxide init zsh)"
+alias cd='z'
 
 # Initialize Starship prompt
 eval "$(starship init zsh)"
