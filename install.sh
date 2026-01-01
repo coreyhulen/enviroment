@@ -250,8 +250,8 @@ setup_preferences() {
     defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
     info "Set fast key repeat rate"
-    defaults write NSGlobalDomain KeyRepeat -int 1
-    defaults write NSGlobalDomain InitialKeyRepeat -int 10
+    defaults write NSGlobalDomain KeyRepeat -int 3
+    defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
     info "Use F1, F2, etc. keys as standard function keys"
     defaults write -g com.apple.keyboard.fnState -boolean true
