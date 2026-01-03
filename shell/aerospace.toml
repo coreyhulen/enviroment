@@ -109,6 +109,11 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.apple.finder'
     run = 'layout floating'
 
+# Make 1Password windows always float
+[[on-window-detected]]
+    if.app-id = 'com.1password.1password'
+    run = 'layout floating'
+
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # 'main' binding mode must be always presented
