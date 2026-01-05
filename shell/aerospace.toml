@@ -64,10 +64,10 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.microsoft.Outlook'
     run = 'move-node-to-workspace 1'
 
-# Force Mattermost Desktop to always start on workspace 1
+# Force Mattermost Desktop to always start on workspace 2
 [[on-window-detected]]
     if.app-id = 'Mattermost.Desktop'
-    run = 'move-node-to-workspace 1'
+    run = 'move-node-to-workspace 2'
 
 # Force Visual Studio Code to always start on workspace 4
 [[on-window-detected]]
@@ -79,10 +79,10 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.googlecode.iterm2'
     run = 'move-node-to-workspace 4'
 
-# Force Google Chrome to always start on workspace 2
+# Force Google Chrome to always start on workspace 1
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome'
-    run = 'move-node-to-workspace 2'
+    run = 'move-node-to-workspace 1'
 
 # Force Microsoft OneNote to always start on workspace 3
 [[on-window-detected]]
