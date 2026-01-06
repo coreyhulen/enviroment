@@ -15,7 +15,7 @@ INSTALLED_ITEMS=""
 FAILED_ITEMS=""
 
 # Package lists
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh"
+BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick"
 BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {
