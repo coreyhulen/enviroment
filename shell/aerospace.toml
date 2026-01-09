@@ -69,6 +69,11 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'Mattermost.Desktop'
     run = 'move-node-to-workspace 2'
 
+# Force Parallels Desktop (Mattermost macOS VM) to always start on workspace 2
+[[on-window-detected]]
+    if.app-id = 'com.parallels.desktop.console'
+    run = 'move-node-to-workspace 2'
+
 # Force Visual Studio Code to always start on workspace 4
 [[on-window-detected]]
     if.app-id = 'com.microsoft.VSCode'
