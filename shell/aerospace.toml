@@ -102,12 +102,17 @@ automatically-unhide-macos-hidden-apps = false
 # Force Zoom to always start on workspace 6
 [[on-window-detected]]
     if.app-id = 'us.zoom.xos'
-    run = 'move-node-to-workspace 6'
+    run = ['move-node-to-workspace 6', 'layout floating']
 
 # Force Microsoft Teams to always start on workspace 6
 [[on-window-detected]]
     if.app-id = 'com.microsoft.teams2'
-    run = 'move-node-to-workspace 6'
+    run = ['move-node-to-workspace 6', 'layout floating']
+
+# Force Blender to always start on workspace 7
+[[on-window-detected]]
+    if.app-id = 'org.blenderfoundation.blender'
+    run = ['move-node-to-workspace 7', 'layout floating']
 
 # Make Finder windows always float
 [[on-window-detected]]
