@@ -331,12 +331,6 @@ setup_preferences() {
     track_installation "macOS preferences" "success"
 }
 
-setup_git_ssh() {
-    info "Configuring git to use SSH for GitHub..."
-    git config --global url."git@github.com:".insteadOf https://github.com/
-    track_installation "Git SSH configuration" "success"
-}
-
 setup_vim() {
     info "Installing LazyVim for Neovim"
 
@@ -515,7 +509,7 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=12
+    TOTAL_STEPS=11
     CURRENT_STEP=0
     
     # Run installation steps
@@ -562,10 +556,6 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Karabiner..."
     setup_karabiner
-
-    CURRENT_STEP=$((CURRENT_STEP + 1))
-    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Configuring Git SSH for GitHub..."
-    setup_git_ssh
 
     # Show installation summary
     echo ""
