@@ -146,6 +146,16 @@ setup_xcode_cli() {
     fi
 }
 
+cleanup_expressvpn() {
+    # Stop ExpressVPN daemon and processes before reinstall to avoid install helper failures
+    if [ -f /Library/LaunchDaemons/com.expressvpn.expressvpnd.plist ]; then
+        info "Stopping ExpressVPN daemon..."
+        sudo launchctl unload /Library/LaunchDaemons/com.expressvpn.expressvpnd.plist 2>/dev/null || true
+    fi
+    sudo killall expressvpnd 2>/dev/null || true
+    sudo killall ExpressVPN 2>/dev/null || true
+}
+
 setup_homebrew() {
     if ! command_exists brew; then
 		warn "Homebrew is not installed. Attempting to install"
@@ -199,6 +209,13 @@ setup_homebrew() {
     
     # Install GUI applications
     for cask in $BREW_CASKS; do
+        # Handle apps that need cleanup before reinstall
+        case $cask in
+            expressvpn)
+                cleanup_expressvpn
+                ;;
+        esac
+
         if brew install --cask --quiet $cask; then
             track_installation "$cask (cask)" "success"
         else
