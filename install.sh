@@ -227,6 +227,28 @@ setup_homebrew() {
     info "Finished installing Homebrew modules"
 }
 
+setup_npm_packages() {
+    info "Installing global npm packages"
+
+    # Check if npm is installed
+    if ! command_exists npm; then
+        error "npm is not installed. Please ensure Node.js was installed successfully."
+        track_installation "npm packages" "failed"
+        return 1
+    fi
+
+    NPM_PACKAGES="@google/gemini-cli"
+
+    for package in $NPM_PACKAGES; do
+        if npm install -g $package; then
+            track_installation "$package (npm)" "success"
+        else
+            warn "Failed to install $package"
+            track_installation "$package (npm)" "failed"
+        fi
+    done
+}
+
 setup_karabiner() {
     info "Installing Karabiner configuration"
     
@@ -509,7 +531,7 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=11
+    TOTAL_STEPS=12
     CURRENT_STEP=0
     
     # Run installation steps
@@ -524,7 +546,11 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Homebrew..."
     setup_homebrew
-    
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up npm packages..."
+    setup_npm_packages
+
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Neovim with LazyVim..."
     setup_vim
