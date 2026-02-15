@@ -492,9 +492,61 @@ setup_iterm2() {
     fi
 }
 
+setup_mcp_servers() {
+    info "Setting up Claude Code MCP servers..."
+
+    # Check if claude command exists
+    if ! command_exists claude; then
+        warn "Claude Code CLI not found. Skipping MCP server setup."
+        track_installation "MCP servers" "failed"
+        return 1
+    fi
+
+    # Check if npx is available
+    if ! command_exists npx; then
+        warn "npx not found. Skipping MCP server setup."
+        track_installation "MCP servers" "failed"
+        return 1
+    fi
+
+    # Unset CLAUDECODE to avoid nested session errors
+    unset CLAUDECODE
+
+    MCP_FAILED=0
+
+    add_mcp() {
+        local name="$1"
+        shift
+        # Remove existing entry first to make this idempotent
+        claude mcp remove "$name" -s user 2>/dev/null || true
+        if claude mcp add "$name" -s user -- "$@" 2>/dev/null; then
+            track_installation "MCP: $name" "success"
+        else
+            warn "Failed to add MCP server: $name"
+            track_installation "MCP: $name" "failed"
+            MCP_FAILED=$((MCP_FAILED + 1))
+        fi
+    }
+
+    add_mcp "seq-server"        npx -y @modelcontextprotocol/server-sequential-thinking
+    add_mcp "gemini-cli"        gemini mcp
+    add_mcp "codex-native"      codex mcp-server
+    add_mcp "fetch-server"      npx -y @modelcontextprotocol/server-fetch
+    add_mcp "filesystem-server" npx -y @modelcontextprotocol/server-filesystem "$HOME"
+    add_mcp "chrome-devtools"   npx -y chrome-devtools-mcp
+    add_mcp "memory"            npx -y @modelcontextprotocol/server-memory
+    add_mcp "postgres-server"   npx -y @modelcontextprotocol/server-postgres
+
+    if [ "$MCP_FAILED" -eq 0 ]; then
+        info "All MCP servers added successfully"
+    else
+        warn "$MCP_FAILED MCP server(s) failed to add"
+    fi
+}
+
 setup_dev_paths() {
     info "Installing various paths and files extensions"
-    
+
     export GOPATH=$HOME/Projects
     mkdir -p $GOPATH $GOPATH/src/github.com/coreyhulen $GOPATH/src/github.com/mattermost $GOPATH/pkg $GOPATH/bin && \
         track_installation "development directories" "success" || \
@@ -531,7 +583,7 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=12
+    TOTAL_STEPS=13
     CURRENT_STEP=0
     
     # Run installation steps
@@ -571,6 +623,10 @@ main() {
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Aerospace..."
     setup_aerospace
     
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Claude Code MCP servers..."
+    setup_mcp_servers
+
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up development paths..."
     setup_dev_paths
