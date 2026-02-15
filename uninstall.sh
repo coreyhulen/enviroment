@@ -288,6 +288,31 @@ remove_karabiner() {
     fi
 }
 
+remove_npm_packages() {
+    info "Uninstalling global npm packages"
+
+    if ! command_exists npm; then
+        warn "npm is not installed, skipping npm package removal"
+        track_removal "npm packages (npm not found)" "success"
+        return
+    fi
+
+    NPM_PACKAGES="@google/gemini-cli @openai/codex"
+
+    for package in $NPM_PACKAGES; do
+        if npm list -g $package >/dev/null 2>&1; then
+            if npm uninstall -g $package; then
+                track_removal "$package (npm)" "success"
+            else
+                warn "Failed to uninstall $package"
+                track_removal "$package (npm)" "failed"
+            fi
+        else
+            track_removal "$package (npm, not installed)" "success"
+        fi
+    done
+}
+
 remove_enviroment() {
     info "Uninstalling environment repository"
     
@@ -353,14 +378,18 @@ main() {
     fi
     
     # Progress tracking
-    TOTAL_STEPS=9
+    TOTAL_STEPS=10
     CURRENT_STEP=0
-    
+
     # Run removal steps
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Homebrew packages..."
     remove_homebrew
-    
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing npm packages..."
+    remove_npm_packages
+
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Neovim/LazyVim configuration..."
     remove_vim
