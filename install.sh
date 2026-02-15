@@ -237,7 +237,7 @@ setup_npm_packages() {
         return 1
     fi
 
-    NPM_PACKAGES="@google/gemini-cli"
+    NPM_PACKAGES="@google/gemini-cli @openai/codex"
 
     for package in $NPM_PACKAGES; do
         if npm install -g $package; then
