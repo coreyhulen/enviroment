@@ -35,6 +35,11 @@ if ! command -v npx &> /dev/null; then
     exit 1
 fi
 
+# Check if uvx is available (needed for fetch-server)
+if ! command -v uvx &> /dev/null; then
+    warn "uvx not found. Install with 'brew install uv'. fetch-server will fail."
+fi
+
 info "Setting up Claude Code MCP servers..."
 echo ""
 
@@ -71,9 +76,9 @@ add_mcp_server "gemini-cli" "Google Gemini" \
 add_mcp_server "codex-native" "OpenAI Codex" \
     codex mcp-server
 
-# Fetch - HTTP fetch capabilities
+# Fetch - HTTP fetch capabilities (Python-based, uses uvx)
 add_mcp_server "fetch-server" "HTTP fetch" \
-    npx -y @modelcontextprotocol/server-fetch
+    uvx mcp-server-fetch
 
 # Filesystem - file operations scoped to home directory
 add_mcp_server "filesystem-server" "filesystem operations" \
