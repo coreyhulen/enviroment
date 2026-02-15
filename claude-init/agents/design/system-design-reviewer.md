@@ -6,7 +6,7 @@ model: opus
 tools: Read, Grep, Glob, WebSearch, mcp__gemini-cli__ask-gemini, mcp__seq-server__sequentialthinking
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](~/.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 ## CRITICAL: Evidence-Based Findings Only
 

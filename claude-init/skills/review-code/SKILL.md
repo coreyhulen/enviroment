@@ -49,7 +49,7 @@ This skill combines:
 
 ## Multi-LLM Models (Code Review)
 
-See `~/.claude/docs/multi-llm-review.md` for model selection, CLI commands, quota limits, and fallback logic. All three tools (Codex, Gemini, seq-server) MUST be used.
+See `claude-init/docs/multi-llm-review.md` for model selection, CLI commands, quota limits, and fallback logic. All three tools (Codex, Gemini, seq-server) MUST be used.
 
 ## What It Does
 
@@ -115,7 +115,7 @@ See `~/.claude/docs/multi-llm-review.md` for model selection, CLI commands, quot
 
 ## Multi-LLM Review Commands
 
-Run **all models from `~/.claude/docs/multi-llm-review.md`** in parallel (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
+Run **all models from `claude-init/docs/multi-llm-review.md`** in parallel (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
 
 ## Code Review Prompt Template
 
@@ -225,7 +225,7 @@ These are **PLAN agents** - use them in `/create-plan` and `/review-plan`:
 
 ## Full Agent Reference
 
-For complete agent listing (~140 agents), see `~/.claude/agents/AGENT_REGISTRY.md`.
+For complete agent listing (~140 agents), see `claude-init/agents/AGENT_REGISTRY.md`.
 
 ## Agent Selection Logic
 
@@ -351,7 +351,7 @@ Fix MUST FIX items before committing.
 
 ## CLI Reference
 
-See `~/.claude/docs/multi-llm-review.md` for CLI commands and quota fallback logic.
+See `claude-init/docs/multi-llm-review.md` for CLI commands and quota fallback logic.
 
 ## When to Use
 

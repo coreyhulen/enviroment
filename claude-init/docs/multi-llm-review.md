@@ -36,7 +36,7 @@ MCP tools have different parameter names and behavior.
 ### Claude Code (Handle Directly)
 - File operations (Read, Write, Edit, Glob, Grep)
 - Git operations, Bash commands
-- TodoWrite planning, tool orchestration
+- Task planning (TaskCreate, TaskUpdate, TaskGet), tool orchestration
 - Quick analysis of 1-3 files
 
 ## CLI Commands

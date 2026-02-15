@@ -21,10 +21,10 @@ Creates production-ready Claude Code Skills with proper YAML frontmatter, progre
 
 ```bash
 # 1. Create skill directory (MUST be at top level, NOT in subdirectories!)
-mkdir -p ~/.claude/skills/my-first-skill
+mkdir -p claude-init/skills/my-first-skill
 
 # 2. Create SKILL.md with proper format
-cat > ~/.claude/skills/my-first-skill/SKILL.md << 'EOF'
+cat > claude-init/skills/my-first-skill/SKILL.md << 'EOF'
 ---
 name: "My First Skill"
 description: "Brief description of what this skill does and when Claude should use it. Maximum 1024 characters."
@@ -125,17 +125,17 @@ tags: ["dev", "api"]   # NOT part of spec
 
 #### Minimal Skill (Required)
 ```
-~/.claude/skills/                    # Personal skills location
+claude-init/skills/                    # Personal skills location
 └── my-skill/                        # Skill directory (MUST be at top level!)
     └── SKILL.md                     # REQUIRED: Main skill file
 ```
 
-**IMPORTANT**: Skills MUST be directly under `~/.claude/skills/[skill-name]/`.
+**IMPORTANT**: Skills MUST be directly under `claude-init/skills/[skill-name]/`.
 Claude Code does NOT support nested subdirectories or namespaces!
 
 #### Full-Featured Skill (Recommended)
 ```
-~/.claude/skills/
+claude-init/skills/
 └── my-skill/                        # Top-level skill directory
         ├── SKILL.md                 # REQUIRED: Main skill file
         ├── README.md                # Optional: Human-readable docs
@@ -161,10 +161,10 @@ Claude Code does NOT support nested subdirectories or namespaces!
 
 **Personal Skills** (available across all projects):
 ```
-~/.claude/skills/
+claude-init/skills/
 └── [your-skills]/
 ```
-- **Path**: `~/.claude/skills/` or `$HOME/.claude/skills/`
+- **Path**: `claude-init/skills/` or `$HOME/.claude/skills/`
 - **Scope**: Available in all projects for this user
 - **Version Control**: NOT committed to git (outside repo)
 - **Use Case**: Personal productivity tools, custom workflows
@@ -528,7 +528,7 @@ Before publishing a skill, verify:
 
 **File Structure**:
 - [ ] SKILL.md exists in skill directory
-- [ ] Directory is DIRECTLY in `~/.claude/skills/[skill-name]/` or `.claude/skills/[skill-name]/`
+- [ ] Directory is DIRECTLY in `claude-init/skills/[skill-name]/` or `.claude/skills/[skill-name]/`
 - [ ] Uses clear, descriptive directory name
 - [ ] **NO nested subdirectories** (Claude Code requires top-level structure)
 

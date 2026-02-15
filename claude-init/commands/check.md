@@ -46,7 +46,7 @@ When you run `/check`, you are REQUIRED to:
 ---
 
 🛑 **MANDATORY PRE-FLIGHT CHECK** 🛑
-1. Re-read ~/.claude/CLAUDE.md RIGHT NOW
+1. Re-read claude-init/CLAUDE.md RIGHT NOW
 2. Check current TODO.md status
 3. Verify you're not declaring "done" prematurely
 
@@ -66,9 +66,9 @@ Let me ultrathink about validating this codebase against our exceptional standar
 **Universal Quality Verification Protocol:**
 
 **Step 0: Hook Status Check**
-- Run `~/.claude/hooks/smart-lint.sh` directly to see current state
+- Run `claude-init/hooks/smart-lint.sh` directly to see current state
 - If ANY issues exist, they MUST be fixed before proceeding
-- Check `~/.claude/hooks/violation-status.sh` if it exists
+- Check `claude-init/hooks/violation-status.sh` if it exists
 
 **Step 1: Pre-Check Analysis**
 - Review recent changes to understand scope
@@ -78,7 +78,7 @@ Let me ultrathink about validating this codebase against our exceptional standar
 **Step 2: Language-Agnostic Linting**
 Run appropriate linters for ALL languages in the project:
 - `make lint` if Makefile exists
-- `~/.claude/hooks/smart-lint.sh` for automatic detection
+- `claude-init/hooks/smart-lint.sh` for automatic detection
 - Manual linter runs if needed
 
 **Universal Requirements:**

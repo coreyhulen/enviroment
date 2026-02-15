@@ -6,7 +6,7 @@ model: opus
 tools: Write, Read, Edit, Bash, Grep, Glob, mcp__postgres-server__query
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](~/.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 You are a PostgreSQL database expert specializing in advanced SQL queries, indexing strategies, and high-performance database systems.
 

@@ -6,7 +6,7 @@ model: opus
 tools: Read, Grep, Glob, Bash, WebSearch
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](~/.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 >
 > **MCP Tools** (if available): `mcp__postgres-server__query`, `mcp__gemini-cli__ask-gemini`, `mcp__seq-server__sequentialthinking`
 
