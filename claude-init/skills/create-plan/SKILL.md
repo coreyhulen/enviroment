@@ -85,29 +85,40 @@ For complete agent listing (~140 agents), see `claude-init/agents/AGENT_REGISTRY
 
 ## MANDATORY: Save Plans to implementation-plans/
 
+**YOU MUST WRITE THE PLAN FILE BEFORE EXITING PLAN MODE. NO EXCEPTIONS.**
+
+If you skip this step, the plan is lost and the user cannot reference it later. This is the #1 most common failure mode — do NOT forget.
+
 **ALWAYS save the final plan to:**
 ```
-<project-root>/implementation-plans/<feature-name>.md
+<project-root>/implementation-plans/YY-MM-DD-<feature-name>.md
 ```
 
 **Naming convention:**
-- Use kebab-case: `page-tree-reordering.md`, `oauth2-support.md`
+- Always prefix with today's date in `YY-MM-DD-` format
+- Use kebab-case for the feature name after the date prefix
 - Be descriptive but concise
-- No date prefixes needed
+- Examples: `26-02-15-page-tree-reordering.md`, `26-03-01-oauth2-support.md`
 
 **CRITICAL WORKFLOW (must follow in order):**
 
 1. **Finalize plan** - Complete all reviews and iterations
-2. **SAVE to file** - Use Write tool to save plan to `implementation-plans/<name>.md`
-3. **Report saved location** - Tell user: "Plan saved to `implementation-plans/<name>.md`"
-4. **Exit plan mode** - Use ExitPlanMode tool
-5. **User approves** - User reviews and approves the plan
+2. **WRITE THE FILE** - Use the `Write` tool to save the complete plan content to `implementation-plans/YY-MM-DD-<name>.md`. You MUST call the Write tool — thinking about it or planning to do it is NOT the same as doing it.
+3. **VERIFY the file exists** - Use `Read` to confirm the file was written successfully
+4. **Report saved location** - Tell user: "Plan saved to `implementation-plans/YY-MM-DD-<name>.md`"
+5. **Exit plan mode** - Use ExitPlanMode tool
+6. **User approves** - User reviews and approves the plan
+
+**SELF-CHECK before ExitPlanMode:**
+- "Did I call the Write tool to save the plan?" — If NO, go back and do it NOW
+- "Can I see the Write tool call in my recent actions?" — If NO, the file was NOT written
 
 **Example:**
 ```
 /create-plan "Add page reordering"
-→ Saves to: implementation-plans/page-reordering.md
-→ "Plan saved to implementation-plans/page-reordering.md"
+→ Write(implementation-plans/26-02-15-page-reordering.md, <full plan content>)
+→ Read(implementation-plans/26-02-15-page-reordering.md)  # verify
+→ "Plan saved to implementation-plans/26-02-15-page-reordering.md"
 → ExitPlanMode
 ```
 
@@ -121,8 +132,8 @@ This ensures all plans are discoverable and version-controlled with the codebase
 
 After user approves the plan:
 
-1. **Read the saved plan file**: `Read(implementation-plans/<name>.md)`
-2. **Confirm source**: "Implementing from `implementation-plans/<name>.md`"
+1. **Read the saved plan file**: `Read(implementation-plans/YY-MM-DD-<name>.md)`
+2. **Confirm source**: "Implementing from `implementation-plans/YY-MM-DD-<name>.md`"
 3. **Follow the plan** - Execute tasks from the file
 
 **Why this matters:**
@@ -141,8 +152,8 @@ After user approves the plan:
 ```
 ✅ User: "Implement the plan"
 ✅ Claude: "Let me read the saved plan first."
-✅ Claude: Read(implementation-plans/page-reordering.md)
-✅ Claude: "Implementing from implementation-plans/page-reordering.md"
+✅ Claude: Read(implementation-plans/26-02-15-page-reordering.md)
+✅ Claude: "Implementing from implementation-plans/26-02-15-page-reordering.md"
 ```
 
 ## What It Does
@@ -197,15 +208,20 @@ After user approves the plan:
          │
          ▼
 ┌─────────────────────────────────────────┐
-│  Step 6: SAVE TO FILE (MANDATORY)       │
-│  - Write plan to implementation-plans/  │
+│  Step 6: WRITE FILE (MANDATORY!)        │
+│  - Call Write tool NOW, not later       │
+│  - Write to implementation-plans/       │
+│  - Call Read to verify file exists      │
 │  - Tell user the saved location         │
+│  DO NOT SKIP OR DEFER THIS STEP        │
 └─────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────┐
 │  Step 7: EXIT PLAN MODE                 │
-│  - Call ExitPlanMode tool               │
+│  - STOP: Did you call Write in Step 6?  │
+│  - If NO → go back and write the file   │
+│  - If YES → Call ExitPlanMode tool      │
 │  - User approves or requests changes    │
 └─────────────────────────────────────────┘
          │
