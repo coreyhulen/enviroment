@@ -16,7 +16,7 @@ Please execute the voice recording script and return the transcribed text as if 
 **Important**: Execute this command to capture voice input:
 
 ```bash
-claude-init/commands/voice-prompt.sh --no-send
+.claude/commands/voice-prompt.sh --no-send
 ```
 
 Then process the returned transcription as the user's actual prompt.

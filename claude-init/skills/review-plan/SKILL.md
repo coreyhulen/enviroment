@@ -98,7 +98,7 @@ Validate implementation plans using multiple LLMs before writing code. **Focuses
 
 ## Models
 
-See `claude-init/docs/multi-llm-review.md` for model selection, quota limits, and fallback logic.
+See `.claude/docs/multi-llm-review.md` for model selection, quota limits, and fallback logic.
 
 ## Plan Agents (Optional)
 
@@ -139,7 +139,7 @@ After multi-LLM review, run domain-specific agents for deeper analysis.
 
 ## Full Agent Reference
 
-For complete agent listing (~140 agents), see `claude-init/agents/AGENT_REGISTRY.md`.
+For complete agent listing (~140 agents), see `.claude/agents/AGENT_REGISTRY.md`.
 
 ## Workflow
 
@@ -152,7 +152,7 @@ For complete agent listing (~140 agents), see `claude-init/agents/AGENT_REGISTRY
 
 ### Step 2: Run Reviews in Parallel
 
-Launch **all models from `claude-init/docs/multi-llm-review.md`** simultaneously (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
+Launch **all models from `.claude/docs/multi-llm-review.md`** simultaneously (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
 
 **Quick mode (`--quick`)**: Use only Gemini.
 
@@ -306,7 +306,7 @@ You are validating "are we building the right thing?" NOT "can we build it?"
 
 ## CLI Reference
 
-See `claude-init/docs/multi-llm-review.md` for CLI commands and quota fallback logic.
+See `.claude/docs/multi-llm-review.md` for CLI commands and quota fallback logic.
 
 ## Examples
 

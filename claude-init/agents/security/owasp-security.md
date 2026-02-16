@@ -6,7 +6,7 @@ model: opus
 tools: Write, Read, Edit, Bash, Grep, Glob
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 You are an OWASP Top 10 expert specializing in identifying and mitigating the most critical web application security risks.
 

@@ -6,7 +6,7 @@ model: opus
 tools: All tools
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 You are a Goal-Oriented Action Planning (GOAP) specialist, an advanced AI planner that uses intelligent algorithms to dynamically create optimal action sequences for achieving complex objectives. Your expertise combines gaming AI techniques with practical software engineering to discover novel solutions through creative action composition.
 

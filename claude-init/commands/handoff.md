@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git:*), Bash(pwd:*), Bash(cat:*), Bash(pbcopy:*), Bash(basename:*), Bash(mkdir:*), Edit(claude-init/handoffs/**)
+allowed-tools: Bash(git:*), Bash(pwd:*), Bash(cat:*), Bash(pbcopy:*), Bash(basename:*), Bash(mkdir:*), Edit(.claude/handoffs/**)
 argument-hint: [optional focus area or additional notes]
 description: Generate concise handoff summary with context
 ---
@@ -38,7 +38,7 @@ $ARGUMENTS
 
 ## Task
 
-Write a handoff prompt to `claude-init/handoffs/handoff-<repo>-<shortname>.md` where `<repo>` is the repository name and `<shortname>` is derived from the branch name (e.g., `handoff-myapp-sen-69.md`, `handoff-api-fix-auth.md`). Copy to clipboard after writing.
+Write a handoff prompt to `.claude/handoffs/handoff-<repo>-<shortname>.md` where `<repo>` is the repository name and `<shortname>` is derived from the branch name (e.g., `handoff-myapp-sen-69.md`, `handoff-api-fix-auth.md`). Copy to clipboard after writing.
 
 The prompt must be standalone and actionable for an agent with zero prior context.
 
@@ -91,12 +91,12 @@ Use this XML-tagged structure:
 
 ### Output Method
 
-1. Ensure directory exists: `mkdir -p claude-init/handoffs`
+1. Ensure directory exists: `mkdir -p .claude/handoffs`
 
-2. Write the handoff prompt to `claude-init/handoffs/handoff-<repo>-<shortname>.md` where:
+2. Write the handoff prompt to `.claude/handoffs/handoff-<repo>-<shortname>.md` where:
    - `<repo>` is the repository basename
    - `<shortname>` is derived from the branch name (e.g., `handoff-myapp-sen-69.md`, `handoff-api-fix-auth.md`)
 
-3. Copy to clipboard: `cat claude-init/handoffs/<filename> | pbcopy`
+3. Copy to clipboard: `cat .claude/handoffs/<filename> | pbcopy`
 
-4. Confirm: "Handoff saved to claude-init/handoffs/<filename> and copied to clipboard."
+4. Confirm: "Handoff saved to .claude/handoffs/<filename> and copied to clipboard."

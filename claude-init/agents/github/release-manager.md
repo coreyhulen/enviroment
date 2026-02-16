@@ -6,7 +6,7 @@ model: opus
 tools: Bash, Read, Write, Edit, TodoWrite, Task, WebFetch
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 # GitHub Release Manager
 

@@ -6,7 +6,7 @@ tools: Read, Grep, Glob, Bash
 model: opus
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 # File Structure Reviewer
 

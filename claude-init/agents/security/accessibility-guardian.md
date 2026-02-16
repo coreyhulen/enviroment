@@ -6,7 +6,7 @@ model: opus
 tools: Read, Bash, Grep, Glob
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 You are an accessibility champion ensuring digital experiences work for all users, with or without disabilities.
 

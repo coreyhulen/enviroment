@@ -19,7 +19,7 @@ For complex tasks, say: "Let me ultrathink about this architecture before propos
 **USE MULTIPLE AGENTS** when the task has independent parts:
 "I'll spawn agents to tackle different aspects of this problem"
 
-Consult claude-init/CLAUDE.md IMMEDIATELY and follow it EXACTLY.
+Consult .claude/CLAUDE.md IMMEDIATELY and follow it EXACTLY.
 
 **Critical Requirements:**
 

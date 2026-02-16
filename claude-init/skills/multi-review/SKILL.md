@@ -28,7 +28,7 @@ Get consensus from multiple LLMs on code quality OR architectural decisions.
 
 ## Models
 
-See `claude-init/docs/multi-llm-review.md` for model selection, quota limits, and fallback logic.
+See `.claude/docs/multi-llm-review.md` for model selection, quota limits, and fallback logic.
 
 ## Workflow
 
@@ -46,7 +46,7 @@ See `claude-init/docs/multi-llm-review.md` for model selection, quota limits, an
 
 ### Step 2: Run Reviews in Parallel
 
-Launch **all models from `claude-init/docs/multi-llm-review.md`** simultaneously (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
+Launch **all models from `.claude/docs/multi-llm-review.md`** simultaneously (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
 
 ### Step 3: Synthesize Consensus
 
@@ -141,13 +141,13 @@ Provide a concrete recommendation with rationale.
 
 ## CLI Reference
 
-See `claude-init/docs/multi-llm-review.md` for CLI commands and quota fallback logic.
+See `.claude/docs/multi-llm-review.md` for CLI commands and quota fallback logic.
 
 ## Tips
 
 - **Parallel execution**: Run all model calls in single message for speed
 - **Large files**: Chunk files >500 lines or summarize first
-- **Model details**: See `claude-init/docs/multi-llm-review.md` for models, quotas, and fallback logic
+- **Model details**: See `.claude/docs/multi-llm-review.md` for models, quotas, and fallback logic
 
 ## Examples
 

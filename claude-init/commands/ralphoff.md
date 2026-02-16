@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Edit(claude-init/handoffs/**)
+allowed-tools: Bash(*), Edit(.claude/handoffs/**)
 argument-hint: [completion criteria or additional notes]
 description: Generate Ralph-loop-ready handoff prompt
 ---
@@ -38,7 +38,7 @@ $ARGUMENTS
 
 ## Task
 
-Write a Ralph-loop context file to `claude-init/handoffs/ralph-<repo>-<shortname>.md` where `<repo>` is the repository name and `<shortname>` is derived from the branch name (e.g., `ralph-myapp-sen-69.md`).
+Write a Ralph-loop context file to `.claude/handoffs/ralph-<repo>-<shortname>.md` where `<repo>` is the repository name and `<shortname>` is derived from the branch name (e.g., `ralph-myapp-sen-69.md`).
 
 The context file contains the detailed task description. A simple wrapper command referencing this file is copied to clipboard for direct use with ralph-loop.
 
@@ -106,9 +106,9 @@ After 15+ iterations without progress:
 
 ### Output Method
 
-1. Ensure directory exists: `mkdir -p claude-init/handoffs`
+1. Ensure directory exists: `mkdir -p .claude/handoffs`
 
-2. Write the Ralph-loop context file to `claude-init/handoffs/ralph-<repo>-<shortname>.md` where:
+2. Write the Ralph-loop context file to `.claude/handoffs/ralph-<repo>-<shortname>.md` where:
    - `<repo>` is the repository basename
    - `<shortname>` is derived from the branch name (e.g., `ralph-myapp-sen-69.md`)
 
@@ -122,11 +122,11 @@ After 15+ iterations without progress:
 
 5. Confirm with usage instructions showing the exact command to run:
    ```
-   Ralph-loop context saved to claude-init/handoffs/<filename>
+   Ralph-loop context saved to .claude/handoffs/<filename>
 
    Run this command in a new Claude Code session:
 
-   /ralph-reviewed:ralph-loop "Read claude-init/handoffs/<filename> and complete the task. Output COMPLETE when done." --completion-promise "COMPLETE" --max-iterations 30
+   /ralph-reviewed:ralph-loop "Read .claude/handoffs/<filename> and complete the task. Output COMPLETE when done." --completion-promise "COMPLETE" --max-iterations 30
    ```
 
 ### Wrapper Command Format
@@ -134,7 +134,7 @@ After 15+ iterations without progress:
 The clipboard should contain ONLY this single-line command (no extra text):
 
 ```
-/ralph-reviewed:ralph-loop "Read claude-init/handoffs/<filename> and complete the task described there. Follow the success criteria and verification loop. Output COMPLETE when all verifications pass, or BLOCKED if stuck after 15 iterations." --completion-promise "COMPLETE" --max-iterations 30
+/ralph-reviewed:ralph-loop "Read .claude/handoffs/<filename> and complete the task described there. Follow the success criteria and verification loop. Output COMPLETE when all verifications pass, or BLOCKED if stuck after 15 iterations." --completion-promise "COMPLETE" --max-iterations 30
 ```
 
 Replace `<filename>` with the actual filename (e.g., `ralph-myrepo-feature-x.md`).

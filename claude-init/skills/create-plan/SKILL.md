@@ -70,7 +70,7 @@ These review **implementation code**, not plans:
 
 **Save code agents for `/review-code` after implementation.**
 
-For complete agent listing (~140 agents), see `claude-init/agents/AGENT_REGISTRY.md`.
+For complete agent listing (~140 agents), see `.claude/agents/AGENT_REGISTRY.md`.
 
 ## Usage
 
@@ -504,7 +504,7 @@ For features spanning multiple phases, add after Problem Statement:
 
 ### Step 3: Multi-LLM Review
 
-Run **all models from `claude-init/docs/multi-llm-review.md`** in parallel (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
+Run **all models from `.claude/docs/multi-llm-review.md`** in parallel (single message, multiple tool calls). This includes Codex, Gemini, AND seq-server — do NOT skip any.
 
 ### Step 4: Agent Review
 

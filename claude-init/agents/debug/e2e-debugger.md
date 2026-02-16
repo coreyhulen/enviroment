@@ -6,7 +6,7 @@ model: opus
 tools: Read, Edit, Bash, Grep, Glob, mcp__postgres-server__query, mcp__fetch-server__fetch
 ---
 
-> **Grounding Rules**: See [grounding-rules.md](claude-init/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
+> **Grounding Rules**: See [grounding-rules.md](.claude/agents/_shared/grounding-rules.md) - ALL findings must be evidence-based.
 
 # E2E Test Debugger
 
