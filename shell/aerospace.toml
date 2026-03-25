@@ -109,6 +109,11 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.adobe.Acrobat.Pro'
     run = 'move-node-to-workspace 8'
 
+# Force Window App to always start on workspace 9
+[[on-window-detected]]
+    if.app-id = 'com.microsoft.rdc.macos'
+    run = 'move-node-to-workspace 9'
+
 # Make Finder windows always float
 [[on-window-detected]]
     if.app-id = 'com.apple.finder'
