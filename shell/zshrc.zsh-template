@@ -50,6 +50,9 @@ export VISUAL='nvim'
 # Language environment
 export LANG=en_US.UTF-8
 
+# Claude Code
+export CLAUDE_CODE_DISABLE_UPDATE_CHECK=1
+
 # Skip rest of config for non-interactive shells (e.g., Claude Code)
 [[ $- != *i* ]] && return
 
