@@ -41,7 +41,7 @@ precmd() {
 
 # Environment variables
 export GOPATH=$HOME/Projects
-export PATH=$GOPATH/bin:$PATH
+export PATH="$HOME/.local/bin:$GOPATH/bin:$PATH"
 
 # Set default editor
 export EDITOR='nvim'

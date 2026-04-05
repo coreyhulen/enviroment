@@ -17,7 +17,7 @@ REMOVE_HOMEBREW=false
 
 # Package lists (should match install.sh)
 BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide"
-BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements"
+BREW_CASKS="iterm2 nikitabobko/tap/aerospace font-jetbrains-mono-nerd-font karabiner-elements"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -124,7 +124,7 @@ remove_homebrew() {
     done
     
     # Also check for karabiner-elements, flutter which might have been installed
-    for extra_cask in "karabiner-elements" "flutter" "rectangle" "lastpass" "claude-code"; do
+    for extra_cask in "karabiner-elements" "flutter" "rectangle" "lastpass"; do
         if brew list --cask | grep -q "^${extra_cask}\$" 2>/dev/null; then
             info "Found additional cask: $extra_cask"
             if brew uninstall --cask $extra_cask 2>/dev/null; then
@@ -288,6 +288,19 @@ remove_karabiner() {
     fi
 }
 
+remove_claude_code() {
+    info "Removing Claude Code CLI..."
+
+    if [ -f "$HOME/.local/bin/claude" ]; then
+        rm -f "$HOME/.local/bin/claude" && \
+            track_removal "Claude Code CLI" "success" || \
+            track_removal "Claude Code CLI" "failed"
+    else
+        info "Claude Code CLI not found, skipping"
+        track_removal "Claude Code CLI (not installed)" "success"
+    fi
+}
+
 remove_npm_packages() {
     info "Uninstalling global npm packages"
 
@@ -378,13 +391,17 @@ main() {
     fi
     
     # Progress tracking
-    TOTAL_STEPS=10
+    TOTAL_STEPS=11
     CURRENT_STEP=0
 
     # Run removal steps
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Homebrew packages..."
     remove_homebrew
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Claude Code CLI..."
+    remove_claude_code
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing npm packages..."

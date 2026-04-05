@@ -16,7 +16,7 @@ FAILED_ITEMS=""
 
 # Package lists
 BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
-BREW_CASKS="iterm2 nikitabobko/tap/aerospace claude-code font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
+BREW_CASKS="iterm2 nikitabobko/tap/aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -247,6 +247,17 @@ setup_npm_packages() {
             track_installation "$package (npm)" "failed"
         fi
     done
+}
+
+setup_claude_code() {
+    info "Installing Claude Code CLI..."
+
+    if curl -fsSL https://claude.ai/install.sh | bash; then
+        track_installation "Claude Code CLI" "success"
+    else
+        warn "Failed to install Claude Code CLI"
+        track_installation "Claude Code CLI" "failed"
+    fi
 }
 
 setup_karabiner() {
@@ -583,7 +594,7 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=13
+    TOTAL_STEPS=14
     CURRENT_STEP=0
     
     # Run installation steps
@@ -602,6 +613,10 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up npm packages..."
     setup_npm_packages
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Claude Code CLI..."
+    setup_claude_code
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Neovim with LazyVim..."
