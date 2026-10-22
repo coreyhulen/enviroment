@@ -1,4 +1,3 @@
-
 #!/bin/sh
 #
 # This script should be run via curl:
@@ -16,8 +15,8 @@ FAILED_ITEMS=""
 REMOVE_HOMEBREW=false
 
 # Package lists (should match install.sh)
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide"
-BREW_CASKS="iterm2 nikitabobko/tap/aerospace font-jetbrains-mono-nerd-font karabiner-elements"
+BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
+BREW_CASKS="iterm2 aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -291,8 +290,9 @@ remove_karabiner() {
 remove_claude_code() {
     info "Removing Claude Code CLI..."
 
-    if [ -f "$HOME/.local/bin/claude" ]; then
+    if [ -e "$HOME/.local/bin/claude" ] || [ -d "$HOME/.local/share/claude" ]; then
         rm -f "$HOME/.local/bin/claude" && \
+        rm -rf "$HOME/.local/share/claude" && \
             track_removal "Claude Code CLI" "success" || \
             track_removal "Claude Code CLI" "failed"
     else
@@ -463,11 +463,3 @@ main() {
 }
 
 main "$@"
-
-
-
-
-
-
-
-

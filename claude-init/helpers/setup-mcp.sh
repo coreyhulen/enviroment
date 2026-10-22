@@ -92,9 +92,5 @@ add_mcp_server "chrome-devtools" "Chrome DevTools" \
 add_mcp_server "memory" "knowledge graph memory" \
     npx -y @modelcontextprotocol/server-memory
 
-# Postgres - PostgreSQL database access
-add_mcp_server "postgres-server" "PostgreSQL" \
-    npx -y @modelcontextprotocol/server-postgres
-
 echo ""
 info "MCP server setup complete: ${GREEN}${SUCCEEDED} succeeded${RESET}, ${RED}${FAILED} failed${RESET}"

@@ -17,7 +17,7 @@ setw -g mouse on
 
 # True color support
 set -g default-terminal "tmux-256color"
-set-option -ag terminal-overrides ",xterm-256color:RGB"
+set-option -as terminal-features ",xterm-256color:RGB"
 
 bind-key : command-prompt
 bind-key r refresh-client
@@ -30,14 +30,10 @@ bind-key enter next-layout
 # use more intuitive keys for splits
 bind | split-window -h -c "#{pane_current_path}"
 bind - split-window -v -c "#{pane_current_path}"
-bind-key h select-pane -L
-bind-key j select-pane -D
-bind-key k select-pane -U
-bind-key l select-pane -R
 
 # Vim-style pane selection
 bind h select-pane -L
-bind j select-pane -D 
+bind j select-pane -D
 bind k select-pane -U
 bind l select-pane -R
 
@@ -82,8 +78,7 @@ unbind -T copy-mode-vi MouseDragEnd1Pane
 
 # Status Bar
 set-option -g status-interval 1
-set-option -g status-style bg=black
-set-option -g status-style fg=white
+set-option -g status-style bg=black,fg=white
 set -g status-left '#[fg=green]#H #[default]'
 set -g status-right '%a%l:%M:%S %p#[default] #[fg=blue]%Y-%m-%d'
 
@@ -115,7 +110,7 @@ set -g @continuum-restore 'on'
 set -g @resurrect-capture-pane-contents 'on'
 
 # Catppuccin theme configuration
-set -g @catppuccin_flavour 'mocha' # or frappe, macchiato, latte
+set -g @catppuccin_flavor 'mocha' # or frappe, macchiato, latte
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'

@@ -19,6 +19,11 @@ This script automatically installs and configures:
 - **ripgrep** & **fd** - Fast search tools
 - **wget** - Network downloader
 - **libpng** - PNG library
+- **gh** - GitHub CLI
+- **ImageMagick** - Image processing
+- **AWS CLI** - Amazon Web Services CLI
+- **uv** - Python package and tool runner (used by MCP servers)
+- **Gemini CLI** & **OpenAI Codex CLI** - Installed globally via npm
 
 ### Shell Enhancements
 - **Starship** - Cross-shell prompt
@@ -31,8 +36,10 @@ This script automatically installs and configures:
 - **iTerm2** - Terminal emulator
 - **Karabiner-Elements** - Keyboard customizer
 - **Aerospace** - Window manager
-- **Claude Code** - AI coding assistant
+- **Claude Code** - AI coding assistant (official native installer)
 - **JetBrains Mono Nerd Font** - Developer font with icons
+- **Visual Studio Code**, **Obsidian**, **Docker Desktop**
+- **GIMP**, **Inkscape**, **Blender**, **Arduino IDE**, **ExpressVPN**
 
 ### Shell Configuration
 - **Zsh** configuration with vim key bindings
@@ -45,6 +52,7 @@ This script automatically installs and configures:
 - Finder enhancements (show extensions, path bar, status bar)
 - Dock auto-hide and process indicators
 - Screenshot location set to ~/Desktop/Screenshots
+- Battery percentage shown in the menu bar
 - Developer-friendly Safari settings
 - Disabled smart quotes for coding
 - Key repeat enabled (no press-and-hold)
@@ -98,18 +106,21 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/mast
 - `cdmm`, `cdch` - Quick navigation to development directories
 
 ### AeroSpace Window Manager
-- **Workspace Switching**: F1-F9 keys
-- **Move Window to Workspace**: Ctrl+F1-F9 (except Ctrl+F5)
+- **Workspace Switching**: F1-F12 keys
+- **Move Window to Workspace**: Ctrl+F1-F12 (except Ctrl+F5)
 - **Window Navigation**: Alt+H/J/K/L (left/down/up/right)
 - **Window Movement**: Alt+Shift+H/J/K/L
 - **Window Resizing**: Alt+Minus/Equal (-50/+50 pixels)
 - **Layout Control**: Alt+Shift+Semicolon for service mode
 - **Workspace Auto-Assignment**:
-  - Workspace 1: Outlook, Mattermost
-  - Workspace 2: Chrome
-  - Workspace 3: OneNote, Obsidian
-  - Workspace 4: VS Code, iTerm2
-  - Workspace 6: Zoom, Teams
+  - Workspace 1: Chrome
+  - Workspace 2: Parallels Desktop
+  - Workspace 3: Mattermost
+  - Workspace 4: Obsidian
+  - Workspace 6: iTerm2, VS Code
+  - Workspace 8: Zoom, Teams, Blender, Adobe Acrobat
+  - Workspace 10: Windows App
+  - Always floating: Finder, 1Password
 
 ## Customization
 
@@ -124,12 +135,12 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/mast
 After installation, you need to:
 
 1. **Configure Mission Control**
-   - System Preferences > Mission Control
+   - System Settings > Desktop & Dock > Shortcuts...
    - Map 'Mission Control' to 'Mouse Button 4'
    - Map 'Show Desktop' to 'Mouse Button 5'
 
 2. **Set Caps Lock as Control**
-   - System Preferences > Keyboard > Modifier Keys
+   - System Settings > Keyboard > Keyboard Shortcuts... > Modifier Keys
    - Change Caps Lock to Control
 
 3. **Complete Neovim Setup**
