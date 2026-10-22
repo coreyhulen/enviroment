@@ -106,8 +106,9 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/mast
 - `cdmm`, `cdch` - Quick navigation to development directories
 
 ### AeroSpace Window Manager
-- **Workspace Switching**: F1-F12 keys
-- **Move Window to Workspace**: Ctrl+F1-F12 (except Ctrl+F5)
+- **Workspace Switching**: F1-F11 keys
+- **Move Window to Workspace**: Ctrl+F1-F11 (except Ctrl+F5)
+- **Toggle Floating/Tiling**: F12
 - **Window Navigation**: Alt+H/J/K/L (left/down/up/right)
 - **Window Movement**: Alt+Shift+H/J/K/L
 - **Window Resizing**: Alt+Minus/Equal (-50/+50 pixels)
