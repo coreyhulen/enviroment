@@ -1,4 +1,3 @@
-
 #!/bin/sh
 #
 # This script should be run via curl:
@@ -15,7 +14,7 @@ INSTALLED_ITEMS=""
 FAILED_ITEMS=""
 
 # Package lists
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
+BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
 BREW_CASKS="iterm2 nikitabobko/tap/aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {
@@ -123,7 +122,7 @@ setup_xcode_cli() {
     info "Checking for Xcode Command Line Tools..."
     
     # Check if Xcode Command Line Tools are already installed
-    if ! xcode-select -p &> /dev/null; then
+    if ! xcode-select -p >/dev/null 2>&1; then
         info "Installing Xcode Command Line Tools..."
         xcode-select --install
         
@@ -133,7 +132,7 @@ setup_xcode_cli() {
         read -r
         
         # Verify installation
-        if xcode-select -p &> /dev/null; then
+        if xcode-select -p >/dev/null 2>&1; then
             track_installation "Xcode Command Line Tools" "success"
         else
             error "Xcode Command Line Tools installation failed"
@@ -320,13 +319,6 @@ setup_preferences() {
     defaults write com.apple.dock autohide -bool true
     defaults write com.apple.dock mru-spaces -bool false
 
-    info "Show status bar and path bar"
-    defaults write com.apple.finder ShowStatusBar -bool true
-    defaults write com.apple.finder ShowPathbar -bool true
-
-    info "Disable the warning when changing a file extension"
-    defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-
     info "Show the ~/Library folder"
     chflags nohidden ~/Library
 
@@ -352,9 +344,8 @@ setup_preferences() {
     defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
     defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
 
-    info "Menu item settings"
-    defaults write com.apple.menuextra.battery ShowPercent -string "YES"
-    defaults write com.apple.menuextra.battery ShowTime -string "NO"
+    info "Show battery percentage in the menu bar"
+    defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -bool true
 
     info "Git settings"
     git config --global --replace-all credential.helper osxkeychain
@@ -540,13 +531,12 @@ setup_mcp_servers() {
     }
 
     add_mcp "seq-server"        npx -y @modelcontextprotocol/server-sequential-thinking
-    add_mcp "gemini-cli"        gemini mcp
+    add_mcp "gemini-cli"        npx -y gemini-mcp-tool
     add_mcp "codex-native"      codex mcp-server
     add_mcp "fetch-server"      uvx mcp-server-fetch
     add_mcp "filesystem-server" npx -y @modelcontextprotocol/server-filesystem "$HOME"
     add_mcp "chrome-devtools"   npx -y chrome-devtools-mcp
     add_mcp "memory"            npx -y @modelcontextprotocol/server-memory
-    add_mcp "postgres-server"   npx -y @modelcontextprotocol/server-postgres
 
     if [ "$MCP_FAILED" -eq 0 ]; then
         info "All MCP servers added successfully"
@@ -568,12 +558,12 @@ setup_manual_steps() {
     echo ""
     warn "MANUAL STEPS NEEDED:"
     warn "1. For Mission Control on Mac"
-    warn "   Goto System Preferences > Mission Control"
+    warn "   Goto System Settings > Desktop & Dock > Shortcuts..."
     warn "   map 'Mission Control:' to 'Mouse Button 4'"
     warn "   map 'Show Desktop:' to 'Mouse Button 5'"
     echo ""
     warn "2. Setup caps lock as control key"
-    warn "   Goto System Preferences > Keyboard > Modifier Keys"
+    warn "   Goto System Settings > Keyboard > Keyboard Shortcuts... > Modifier Keys"
     warn "   Change Caps Lock > Control"
     echo ""
 }
