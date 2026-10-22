@@ -15,7 +15,7 @@ FAILED_ITEMS=""
 REMOVE_HOMEBREW=false
 
 # Package lists (should match install.sh)
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
+BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
 BREW_CASKS="iterm2 aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {

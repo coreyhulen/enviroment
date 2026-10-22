@@ -14,7 +14,7 @@ INSTALLED_ITEMS=""
 FAILED_ITEMS=""
 
 # Package lists
-BREW_PACKAGES="wget go node libpng tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
+BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
 BREW_CASKS="iterm2 nikitabobko/tap/aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {
@@ -531,7 +531,7 @@ setup_mcp_servers() {
     }
 
     add_mcp "seq-server"        npx -y @modelcontextprotocol/server-sequential-thinking
-    add_mcp "gemini-cli"        gemini mcp
+    add_mcp "gemini-cli"        npx -y gemini-mcp-tool
     add_mcp "codex-native"      codex mcp-server
     add_mcp "fetch-server"      uvx mcp-server-fetch
     add_mcp "filesystem-server" npx -y @modelcontextprotocol/server-filesystem "$HOME"

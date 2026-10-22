@@ -70,7 +70,7 @@ add_mcp_server "seq-server" "sequential thinking" \
 
 # Gemini CLI - Google Gemini integration
 add_mcp_server "gemini-cli" "Google Gemini" \
-    gemini mcp
+    npx -y gemini-mcp-tool
 
 # OpenAI Codex - OpenAI Codex integration
 add_mcp_server "codex-native" "OpenAI Codex" \

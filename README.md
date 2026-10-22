@@ -18,7 +18,6 @@ This script automatically installs and configures:
 - **Protobuf** - Protocol buffers
 - **ripgrep** & **fd** - Fast search tools
 - **wget** - Network downloader
-- **libpng** - PNG library
 - **gh** - GitHub CLI
 - **ImageMagick** - Image processing
 - **AWS CLI** - Amazon Web Services CLI
