@@ -189,7 +189,7 @@ automatically-unhide-macos-hidden-apps = false
     f9 = 'workspace 9'
     f10 = 'workspace 10'
     f11 = 'workspace 11'
-    f12 = 'workspace 12'
+    f12 = 'layout floating tiling'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
     ctrl-f1 = 'move-node-to-workspace 1'
