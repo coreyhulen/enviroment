@@ -202,7 +202,6 @@ automatically-unhide-macos-hidden-apps = false
     ctrl-f9 = 'move-node-to-workspace 9'
     ctrl-f10 = 'move-node-to-workspace 10'
     ctrl-f11 = 'move-node-to-workspace 11'
-    ctrl-f12 = 'move-node-to-workspace 12'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
