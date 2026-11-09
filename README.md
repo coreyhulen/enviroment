@@ -9,6 +9,7 @@ This script automatically installs and configures:
 ### Package Manager
 - **Homebrew** - The missing package manager for macOS
 - **Xcode Command Line Tools** - Installed first if missing
+- **mas** - Mac App Store CLI (used to install Xcode)
 
 ### Development Tools
 - **Neovim** with **LazyVim** - Modern text editor with powerful IDE features
@@ -38,6 +39,7 @@ This script automatically installs and configures:
 - **Claude Code** - AI coding assistant (official native installer)
 - **OpenAI Codex CLI** - AI coding agent (official standalone installer)
 - **JetBrains Mono Nerd Font** - Developer font with icons
+- **Xcode** - Installed from the Mac App Store with `mas` (requires App Store sign-in)
 - **Visual Studio Code**, **Obsidian**, **Docker Desktop**
 - **GIMP**, **Inkscape**, **Blender**, **Arduino IDE**, **ExpressVPN**
 
@@ -86,17 +88,18 @@ The installer will:
 1. Install Xcode Command Line Tools (if not present)
 2. Clone the environment repository to `~/.enviroment`
 3. Install Homebrew (if not present) and all packages and applications
-4. Install Claude Code
-5. Install Codex CLI
-6. Configure Neovim with LazyVim
-7. Set up the zsh configuration (backing up any existing `~/.zshrc`)
-8. Configure tmux and install TPM
-9. Install iTerm2 settings (backing up existing preferences)
-10. Install the AeroSpace configuration
-11. Register Claude Code MCP servers
-12. Create development directories under `~/Projects`
-13. Apply macOS preferences and git settings
-14. Install the Karabiner configuration
+4. Install Xcode from the Mac App Store (if not present)
+5. Install Claude Code
+6. Install Codex CLI
+7. Configure Neovim with LazyVim
+8. Set up the zsh configuration (backing up any existing `~/.zshrc`)
+9. Configure tmux and install TPM
+10. Install iTerm2 settings (backing up existing preferences)
+11. Install the AeroSpace configuration
+12. Register Claude Code MCP servers
+13. Create development directories under `~/Projects`
+14. Apply macOS preferences and git settings
+15. Install the Karabiner configuration
 
 The installer can be re-run safely; existing items are skipped or backed up, and MCP servers are re-registered. A summary of successful and failed steps is printed at the end.
 
@@ -191,11 +194,14 @@ After installation, you need to:
    - System Settings > Keyboard > Keyboard Shortcuts... > Modifier Keys
    - Change Caps Lock to Control
 
-3. **Complete Neovim Setup**
+3. **Finish Xcode Setup**
+   - Open Xcode once to accept the license and install additional components
+
+4. **Complete Neovim Setup**
    - Run `nvim` to start Neovim
    - LazyVim will automatically install plugins
 
-4. **Install Tmux Plugins**
+5. **Install Tmux Plugins**
    - Start tmux
    - Press `Ctrl-a + I` to install plugins
 

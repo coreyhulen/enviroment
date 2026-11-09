@@ -18,7 +18,7 @@ FAILED_ITEMS=""
 REMOVE_HOMEBREW=false
 
 # Package lists (should match install.sh)
-BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
+BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv mas"
 BREW_CASKS="iterm2 aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {
@@ -300,6 +300,24 @@ remove_claude_code() {
     fi
 }
 
+remove_xcode() {
+    info "Removing Xcode..."
+
+    # Only remove an App Store copy; needs mas, so run before Homebrew packages are removed
+    if ! command_exists mas || ! mas list 2>/dev/null | grep -q '497799835'; then
+        info "Xcode not installed from the App Store, skipping"
+        track_removal "Xcode (not installed)" "success"
+        return
+    fi
+
+    if sudo mas uninstall 497799835; then
+        track_removal "Xcode" "success"
+    else
+        warn "Failed to uninstall Xcode"
+        track_removal "Xcode" "failed"
+    fi
+}
+
 remove_codex() {
     info "Removing Codex CLI..."
 
@@ -403,13 +421,17 @@ main() {
     fi
     
     # Progress tracking
-    TOTAL_STEPS=12
+    TOTAL_STEPS=13
     CURRENT_STEP=0
 
     # Run removal steps (npm packages first, while Homebrew's node is still installed)
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing legacy npm packages..."
     remove_npm_packages
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Xcode..."
+    remove_xcode
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Homebrew packages..."

@@ -17,7 +17,7 @@ INSTALLED_ITEMS=""
 FAILED_ITEMS=""
 
 # Package lists
-BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv"
+BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv mas"
 BREW_CASKS="iterm2 nikitabobko/tap/aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
 
 command_exists() {
@@ -237,6 +237,31 @@ setup_homebrew() {
     done
 
     info "Finished installing Homebrew modules"
+}
+
+setup_xcode() {
+    info "Checking for Xcode..."
+
+    if [ -d /Applications/Xcode.app ]; then
+        info "Xcode already installed"
+        track_installation "Xcode (existing)" "success"
+        return
+    fi
+
+    if ! command_exists mas; then
+        warn "mas is not installed, skipping Xcode"
+        track_installation "Xcode" "failed"
+        return
+    fi
+
+    # Xcode's App Store ID; requires being signed in to the App Store. Large download.
+    info "Installing Xcode from the App Store (this can take a while)..."
+    if mas install 497799835 || mas get 497799835; then
+        track_installation "Xcode" "success"
+    else
+        warn "Failed to install Xcode (sign in to the App Store and re-run, or install it manually)"
+        track_installation "Xcode" "failed"
+    fi
 }
 
 setup_codex() {
@@ -579,6 +604,9 @@ setup_manual_steps() {
     warn "   Goto System Settings > Keyboard > Keyboard Shortcuts... > Modifier Keys"
     warn "   Change Caps Lock > Control"
     echo ""
+    warn "3. Finish Xcode setup"
+    warn "   Open Xcode once to accept the license and install additional components"
+    echo ""
 }
 
 disable_git_ssh_rewrite() {
@@ -620,7 +648,7 @@ main() {
     echo ""
     
     # Progress tracking
-    TOTAL_STEPS=14
+    TOTAL_STEPS=15
     CURRENT_STEP=0
     
     # Run installation steps
@@ -635,6 +663,10 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Homebrew..."
     setup_homebrew
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Xcode..."
+    setup_xcode
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Claude Code CLI..."
