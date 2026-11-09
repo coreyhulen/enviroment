@@ -147,32 +147,15 @@ setup_xcode_cli() {
 
 cleanup_expressvpn() {
     # Stop ExpressVPN daemon and processes before reinstall to avoid install helper failures
-    if [ -f /Library/LaunchDaemons/com.expressvpn.expressvpnd.plist ]; then
-        info "Stopping ExpressVPN daemon..."
-        sudo launchctl unload /Library/LaunchDaemons/com.expressvpn.expressvpnd.plist 2>/dev/null || true
-    fi
-    sudo killall expressvpnd 2>/dev/null || true
-    sudo killall ExpressVPN 2>/dev/null || true
-}
-
-setup_sudo() {
-    # Ask for the admin password once up front; Homebrew needs sudo for casks
-    # with system components (Karabiner-Elements, Docker Desktop, ExpressVPN)
-    if sudo -n true 2>/dev/null; then
-        :
-    elif [ -t 0 ]; then
-        info "Some apps need administrator access to install. Enter your password to continue."
-        if ! sudo -v; then
-            warn "No administrator access; apps that need it will fail to install"
-            return
+    # Newer versions register com.express.vpn.daemon; older ones used com.expressvpn.expressvpnd
+    for plist in /Library/LaunchDaemons/com.express.vpn.daemon.plist /Library/LaunchDaemons/com.expressvpn.expressvpnd.plist; do
+        if [ -f "$plist" ]; then
+            info "Stopping ExpressVPN daemon..."
+            sudo launchctl unload "$plist" 2>/dev/null || true
         fi
-    else
-        warn "No terminal to ask for a password; apps that need administrator access will fail to install"
-        return
-    fi
-
-    # Keep the sudo timestamp fresh until this script exits
-    while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
+    done
+    sudo killall expressvpn-daemon expressvpnd 2>/dev/null || true
+    sudo killall ExpressVPN 2>/dev/null || true
 }
 
 setup_homebrew() {
@@ -232,6 +215,12 @@ setup_homebrew() {
         # Handle apps that need cleanup before reinstall
         case $cask in
             expressvpn)
+                # ExpressVPN's installer fails if a copy Homebrew doesn't manage is already in /Applications
+                if [ -d /Applications/ExpressVPN.app ] && ! brew list --cask expressvpn >/dev/null 2>&1; then
+                    info "ExpressVPN is already installed outside Homebrew, skipping"
+                    track_installation "$cask (cask, already installed)" "success"
+                    continue
+                fi
                 cleanup_expressvpn
                 ;;
         esac
@@ -619,7 +608,6 @@ main() {
 
     # Check system requirements first
     check_system_requirements
-    setup_sudo
     echo ""
     
     # Progress tracking

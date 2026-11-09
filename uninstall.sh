@@ -85,26 +85,6 @@ setup_color() {
 	fi
 }
 
-setup_sudo() {
-    # Ask for the admin password once up front; Homebrew needs sudo for casks
-    # with system components (Karabiner-Elements, Docker Desktop, ExpressVPN)
-    if sudo -n true 2>/dev/null; then
-        :
-    elif [ -t 0 ]; then
-        info "Some apps need administrator access to remove. Enter your password to continue."
-        if ! sudo -v; then
-            warn "No administrator access; apps that need it will fail to uninstall"
-            return
-        fi
-    else
-        warn "No terminal to ask for a password; apps that need administrator access will fail to uninstall"
-        return
-    fi
-
-    # Keep the sudo timestamp fresh until this script exits
-    while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
-}
-
 remove_homebrew() {
     if ! command_exists brew; then
         warn "Homebrew is not installed, skipping package removal"
@@ -418,8 +398,6 @@ main() {
         fi
         echo ""
     fi
-
-    setup_sudo
     
     # Progress tracking
     TOTAL_STEPS=12

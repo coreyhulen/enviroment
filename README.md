@@ -80,6 +80,8 @@ Run this command in your terminal:
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/master/install.sh)"
 ```
 
+Some casks (Karabiner-Elements, Docker Desktop, ExpressVPN) install system components, so Homebrew will ask for your administrator password while installing them. Homebrew clears cached sudo credentials on every run, so expect more than one prompt. If ExpressVPN is already installed outside Homebrew, it is left alone.
+
 The installer will:
 1. Install Xcode Command Line Tools (if not present)
 2. Clone the environment repository to `~/.enviroment`
@@ -106,7 +108,7 @@ To remove all configurations and packages:
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/coreyhulen/enviroment/master/uninstall.sh)"
 ```
 
-The uninstaller asks for confirmation, backs up `~/.zshrc` and `~/.config/nvim` before removing them, and leaves iTerm2 preferences, git identity, and most macOS preferences in place.
+The uninstaller asks for confirmation (Homebrew may also ask for your administrator password when removing casks with system components), backs up `~/.zshrc` and `~/.config/nvim` before removing them, and leaves iTerm2 preferences, git identity, and most macOS preferences in place.
 
 ### Uninstallation Options
 
