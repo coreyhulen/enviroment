@@ -9,6 +9,9 @@ REPO=${REPO:-coreyhulen/enviroment}
 REMOTE=${REMOTE:-https://github.com/${REPO}.git}
 BRANCH=${BRANCH:-master}
 
+# Homebrew 7+ prompts "Do you want to proceed? [y/n]" before installs with dependencies; run unattended
+export HOMEBREW_NO_ASK=1
+
 # Uninstallation tracking
 REMOVED_ITEMS=""
 FAILED_ITEMS=""

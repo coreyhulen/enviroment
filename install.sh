@@ -9,6 +9,9 @@ REPO=${REPO:-coreyhulen/enviroment}
 REMOTE=${REMOTE:-https://github.com/${REPO}.git}
 BRANCH=${BRANCH:-master}
 
+# Homebrew 7+ prompts "Do you want to proceed? [y/n]" before installs with dependencies; run unattended
+export HOMEBREW_NO_ASK=1
+
 # Installation tracking
 INSTALLED_ITEMS=""
 FAILED_ITEMS=""
@@ -243,10 +246,16 @@ setup_codex() {
     # (.zshrc already handles it)
     export PATH="$HOME/.local/bin:$PATH"
 
-    if curl -fsSL https://chatgpt.com/codex/install.sh | sh; then
+    # Non-interactive skips the installer's "Start Codex now?" and "Uninstall the existing
+    # Codex?" prompts; launching the TUI mid-install makes its exit code the installer's
+    curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+    codex_status=$?
+
+    # Judge by whether the binary works, not just the installer's exit code
+    if "$HOME/.local/bin/codex" --version >/dev/null 2>&1; then
         track_installation "Codex CLI" "success"
     else
-        warn "Failed to install Codex CLI"
+        warn "Failed to install Codex CLI (installer exited with status $codex_status)"
         track_installation "Codex CLI" "failed"
     fi
 }
