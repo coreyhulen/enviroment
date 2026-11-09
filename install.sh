@@ -193,8 +193,9 @@ setup_homebrew() {
     brew update --quiet || warn "Failed to update Homebrew"
     brew upgrade --quiet || warn "Failed to upgrade Homebrew packages"
 
-    # Add required tap for aerospace
+    # Add required tap for aerospace (Homebrew refuses to load untrusted third-party taps)
     brew tap nikitabobko/tap || warn "Failed to add nikitabobko/tap"
+    brew trust --tap nikitabobko/tap || warn "Failed to trust nikitabobko/tap"
     
     # Install command line tools
     for package in $BREW_PACKAGES; do
@@ -226,32 +227,28 @@ setup_homebrew() {
     info "Finished installing Homebrew modules"
 }
 
-setup_npm_packages() {
-    info "Installing global npm packages"
+setup_codex() {
+    info "Installing Codex CLI..."
 
-    # Check if npm is installed
-    if ! command_exists npm; then
-        error "npm is not installed. Please ensure Node.js was installed successfully."
-        track_installation "npm packages" "failed"
-        return 1
+    # Put ~/.local/bin on PATH first so the installer doesn't add it to ~/.zprofile
+    # (.zshrc already handles it)
+    export PATH="$HOME/.local/bin:$PATH"
+
+    if curl -fsSL https://chatgpt.com/codex/install.sh | sh; then
+        track_installation "Codex CLI" "success"
+    else
+        warn "Failed to install Codex CLI"
+        track_installation "Codex CLI" "failed"
     fi
-
-    NPM_PACKAGES="@google/gemini-cli @openai/codex"
-
-    for package in $NPM_PACKAGES; do
-        if npm install -g $package; then
-            track_installation "$package (npm)" "success"
-        else
-            warn "Failed to install $package"
-            track_installation "$package (npm)" "failed"
-        fi
-    done
 }
 
 setup_claude_code() {
     info "Installing Claude Code CLI..."
 
     if curl -fsSL https://claude.ai/install.sh | bash; then
+        # The native installer puts claude in ~/.local/bin, which isn't on PATH
+        # until the new .zshrc loads; later steps (MCP setup) need it now
+        export PATH="$HOME/.local/bin:$PATH"
         track_installation "Claude Code CLI" "success"
     else
         warn "Failed to install Claude Code CLI"
@@ -323,6 +320,7 @@ setup_preferences() {
     chflags nohidden ~/Library
 
     info "Set where screenshots go"
+    mkdir -p "$HOME/Desktop/Screenshots"
     defaults write com.apple.screencapture location -string "$HOME/Desktop/Screenshots"
 
     info "Safari enable Safari Developer Settings (Safari must be closed)"
@@ -351,6 +349,11 @@ setup_preferences() {
     git config --global --replace-all credential.helper osxkeychain
     git config --global user.email "corey@hulen.com"
     git config --global user.name "coreyhulen"
+
+    info "Restart Finder, Dock, and SystemUIServer to apply changes"
+    for app in Finder Dock SystemUIServer; do
+        killall "$app" >/dev/null 2>&1 || true
+    done
 
     track_installation "macOS preferences" "success"
 }
@@ -469,24 +472,12 @@ setup_iterm2() {
         cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist.backup.$(date +%Y%m%d_%H%M%S)
     fi
     
-    # Copy iTerm2 preferences
+    # Import iTerm2 preferences through cfprefsd so cached values don't overwrite them
     if [ -f $ENVIRO/shell/iterm2-settings.plist ]; then
-        # Create a temporary copy to convert
-        cp -f $ENVIRO/shell/iterm2-settings.plist /tmp/iterm2-settings-temp.plist
-        
-        # Convert from XML to binary format
-        plutil -convert binary1 /tmp/iterm2-settings-temp.plist
-        
-        # Copy the binary version to preferences
-        cp -f /tmp/iterm2-settings-temp.plist ~/Library/Preferences/com.googlecode.iterm2.plist && \
+        defaults import com.googlecode.iterm2 $ENVIRO/shell/iterm2-settings.plist && \
             track_installation "iTerm2 configuration" "success" || \
             track_installation "iTerm2 configuration" "failed"
-        
-        # Clean up temporary file
-        rm -f /tmp/iterm2-settings-temp.plist
-        
-        # Clear the preferences cache
-        defaults read com.googlecode.iterm2 >/dev/null 2>&1
+
         info "iTerm2 configuration installed. You may need to restart iTerm2 for changes to take effect."
     else
         warn "iTerm2 settings file not found in repository"
@@ -531,12 +522,14 @@ setup_mcp_servers() {
     }
 
     add_mcp "seq-server"        npx -y @modelcontextprotocol/server-sequential-thinking
-    add_mcp "gemini-cli"        npx -y gemini-mcp-tool
     add_mcp "codex-native"      codex mcp-server
     add_mcp "fetch-server"      uvx mcp-server-fetch
     add_mcp "filesystem-server" npx -y @modelcontextprotocol/server-filesystem "$HOME"
     add_mcp "chrome-devtools"   npx -y chrome-devtools-mcp
     add_mcp "memory"            npx -y @modelcontextprotocol/server-memory
+
+    # Gemini CLI is no longer installed; drop its MCP server from older installs
+    claude mcp remove "gemini-cli" -s user >/dev/null 2>&1 || true
 
     if [ "$MCP_FAILED" -eq 0 ]; then
         info "All MCP servers added successfully"
@@ -568,13 +561,36 @@ setup_manual_steps() {
     echo ""
 }
 
+disable_git_ssh_rewrite() {
+    # Temporarily remove git SSH rewriting so HTTPS clones work without SSH keys.
+    # Skip on a fresh machine where git is only the Xcode CLI stub.
+    xcode-select -p >/dev/null 2>&1 || return 0
+
+    SAVED_GIT_INSTEADOF=$(git config --global --get-all url."git@github.com:".insteadOf 2>/dev/null)
+    if [ -n "$SAVED_GIT_INSTEADOF" ]; then
+        git config --global --unset-all url."git@github.com:".insteadOf 2>/dev/null || true
+    fi
+}
+
+restore_git_ssh_rewrite() {
+    [ -n "$SAVED_GIT_INSTEADOF" ] || return 0
+
+    info "Restoring git SSH rewriting"
+    git config --global --unset-all url."git@github.com:".insteadOf 2>/dev/null || true
+    echo "$SAVED_GIT_INSTEADOF" | while IFS= read -r value; do
+        git config --global --add url."git@github.com:".insteadOf "$value"
+    done
+    SAVED_GIT_INSTEADOF=""
+}
+
 main() {
 
 	setup_color
 
-    # Temporarily remove git SSH rewriting to avoid issues during installation
-    # It will be re-added at the end of the script
-    git config --global --unset url."git@github.com:".insteadOf 2>/dev/null || true
+    # Restore git SSH rewriting on any exit, including early failures
+    disable_git_ssh_rewrite
+    trap restore_git_ssh_rewrite EXIT
+    trap 'exit 130' INT TERM
 
     info "Installing your Mac environment"
     echo ""
@@ -601,12 +617,12 @@ main() {
     setup_homebrew
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
-    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up npm packages..."
-    setup_npm_packages
-
-    CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Claude Code CLI..."
     setup_claude_code
+
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Codex CLI..."
+    setup_codex
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Neovim with LazyVim..."

@@ -39,6 +39,13 @@ precmd() {
 # You can customize this by uncommenting and modifying the line below
 # PROMPT='%n@%m:%~%# '
 
+# Homebrew (sets PATH, HOMEBREW_PREFIX, MANPATH; Apple Silicon or Intel)
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 # Environment variables
 export GOPATH=$HOME/Projects
 export PATH="$HOME/.local/bin:$GOPATH/bin:$PATH"
@@ -49,9 +56,6 @@ export VISUAL='nvim'
 
 # Language environment
 export LANG=en_US.UTF-8
-
-# Claude Code
-export DISABLE_AUTOUPDATER=1
 
 # Skip rest of config for non-interactive shells (e.g., Claude Code)
 [[ $- != *i* ]] && return
@@ -98,10 +102,10 @@ if [ -f ~/.zshrc.local ]; then
 fi
 
 # Load zsh-autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Load zsh-syntax-highlighting (must be loaded after other plugins)
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Initialize zoxide (smart cd)
 eval "$(zoxide init zsh)"

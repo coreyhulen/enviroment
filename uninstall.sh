@@ -121,20 +121,6 @@ remove_homebrew() {
             track_removal "$cask (cask, not installed)" "success"
         fi
     done
-    
-    # Also check for karabiner-elements, flutter which might have been installed
-    for extra_cask in "karabiner-elements" "flutter" "rectangle" "lastpass"; do
-        if brew list --cask | grep -q "^${extra_cask}\$" 2>/dev/null; then
-            info "Found additional cask: $extra_cask"
-            if brew uninstall --cask $extra_cask 2>/dev/null; then
-                track_removal "$extra_cask (cask)" "success"
-            else
-                warn "Failed to uninstall $extra_cask"
-                track_removal "$extra_cask (cask)" "failed"
-            fi
-        fi
-    done
-    
     info "Finished uninstalling Homebrew packages"
     
     # Handle complete Homebrew removal based on flag or interactive prompt
@@ -299,6 +285,31 @@ remove_claude_code() {
         info "Claude Code CLI not found, skipping"
         track_removal "Claude Code CLI (not installed)" "success"
     fi
+
+    # Older versions of install.sh used the Homebrew cask instead of the native installer
+    if command_exists brew && brew list --cask 2>/dev/null | grep -q "^claude-code\$"; then
+        if brew uninstall --cask claude-code 2>/dev/null; then
+            track_removal "Claude Code CLI (Homebrew cask)" "success"
+        else
+            warn "Failed to uninstall claude-code cask"
+            track_removal "Claude Code CLI (Homebrew cask)" "failed"
+        fi
+    fi
+}
+
+remove_codex() {
+    info "Removing Codex CLI..."
+
+    # Standalone installer files (config in ~/.codex is preserved)
+    if [ -e "$HOME/.local/bin/codex" ] || [ -d "$HOME/.codex/packages/standalone" ]; then
+        rm -f "$HOME/.local/bin/codex" "$HOME/.local/bin/codex-code-mode-host" && \
+        rm -rf "$HOME/.codex/packages/standalone" && \
+            track_removal "Codex CLI" "success" || \
+            track_removal "Codex CLI" "failed"
+    else
+        info "Codex CLI not found, skipping"
+        track_removal "Codex CLI (not installed)" "success"
+    fi
 }
 
 remove_npm_packages() {
@@ -310,6 +321,7 @@ remove_npm_packages() {
         return
     fi
 
+    # Older versions of install.sh installed these via npm
     NPM_PACKAGES="@google/gemini-cli @openai/codex"
 
     for package in $NPM_PACKAGES; do
@@ -345,10 +357,7 @@ remove_preferences() {
     
     # Revert screenshot location to default
     defaults delete com.apple.screencapture location 2>/dev/null
-    
-    # Remove git configurations that were specific to this setup
-    git config --global --unset url."git@github.com:".insteadOf 2>/dev/null
-    
+
     track_removal "macOS preferences (partial revert)" "success"
     info "Some preferences were left as-is to avoid disrupting your workflow"
 }
@@ -391,10 +400,14 @@ main() {
     fi
     
     # Progress tracking
-    TOTAL_STEPS=11
+    TOTAL_STEPS=12
     CURRENT_STEP=0
 
-    # Run removal steps
+    # Run removal steps (npm packages first, while Homebrew's node is still installed)
+    CURRENT_STEP=$((CURRENT_STEP + 1))
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing legacy npm packages..."
+    remove_npm_packages
+
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Homebrew packages..."
     remove_homebrew
@@ -404,8 +417,8 @@ main() {
     remove_claude_code
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
-    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing npm packages..."
-    remove_npm_packages
+    echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Codex CLI..."
+    remove_codex
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Neovim/LazyVim configuration..."
