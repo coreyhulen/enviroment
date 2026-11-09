@@ -155,6 +155,26 @@ cleanup_expressvpn() {
     sudo killall ExpressVPN 2>/dev/null || true
 }
 
+setup_sudo() {
+    # Ask for the admin password once up front; Homebrew needs sudo for casks
+    # with system components (Karabiner-Elements, Docker Desktop, ExpressVPN)
+    if sudo -n true 2>/dev/null; then
+        :
+    elif [ -t 0 ]; then
+        info "Some apps need administrator access to install. Enter your password to continue."
+        if ! sudo -v; then
+            warn "No administrator access; apps that need it will fail to install"
+            return
+        fi
+    else
+        warn "No terminal to ask for a password; apps that need administrator access will fail to install"
+        return
+    fi
+
+    # Keep the sudo timestamp fresh until this script exits
+    while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
+}
+
 setup_homebrew() {
     if ! command_exists brew; then
 		warn "Homebrew is not installed. Attempting to install"
@@ -528,8 +548,10 @@ setup_mcp_servers() {
     add_mcp "chrome-devtools"   npx -y chrome-devtools-mcp
     add_mcp "memory"            npx -y @modelcontextprotocol/server-memory
 
-    # Gemini CLI is no longer installed; drop its MCP server from older installs
-    claude mcp remove "gemini-cli" -s user >/dev/null 2>&1 || true
+    # Drop MCP servers that older versions of this script registered
+    for name in gemini-cli postgres-server; do
+        claude mcp remove "$name" -s user >/dev/null 2>&1 || true
+    done
 
     if [ "$MCP_FAILED" -eq 0 ]; then
         info "All MCP servers added successfully"
@@ -597,6 +619,7 @@ main() {
 
     # Check system requirements first
     check_system_requirements
+    setup_sudo
     echo ""
     
     # Progress tracking

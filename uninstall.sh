@@ -85,6 +85,26 @@ setup_color() {
 	fi
 }
 
+setup_sudo() {
+    # Ask for the admin password once up front; Homebrew needs sudo for casks
+    # with system components (Karabiner-Elements, Docker Desktop, ExpressVPN)
+    if sudo -n true 2>/dev/null; then
+        :
+    elif [ -t 0 ]; then
+        info "Some apps need administrator access to remove. Enter your password to continue."
+        if ! sudo -v; then
+            warn "No administrator access; apps that need it will fail to uninstall"
+            return
+        fi
+    else
+        warn "No terminal to ask for a password; apps that need administrator access will fail to uninstall"
+        return
+    fi
+
+    # Keep the sudo timestamp fresh until this script exits
+    while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
+}
+
 remove_homebrew() {
     if ! command_exists brew; then
         warn "Homebrew is not installed, skipping package removal"
@@ -97,7 +117,7 @@ remove_homebrew() {
     # Uninstall command line tools
     for package in $BREW_PACKAGES; do
         if brew list --formula | grep -q "^${package}\$" 2>/dev/null; then
-            if brew uninstall $package 2>/dev/null; then
+            if brew uninstall $package; then
                 track_removal "$package" "success"
             else
                 warn "Failed to uninstall $package"
@@ -111,7 +131,7 @@ remove_homebrew() {
     # Uninstall GUI applications
     for cask in $BREW_CASKS; do
         if brew list --cask | grep -q "^${cask}\$" 2>/dev/null; then
-            if brew uninstall --cask $cask 2>/dev/null; then
+            if brew uninstall --cask $cask; then
                 track_removal "$cask (cask)" "success"
             else
                 warn "Failed to uninstall $cask"
@@ -288,7 +308,7 @@ remove_claude_code() {
 
     # Older versions of install.sh used the Homebrew cask instead of the native installer
     if command_exists brew && brew list --cask 2>/dev/null | grep -q "^claude-code\$"; then
-        if brew uninstall --cask claude-code 2>/dev/null; then
+        if brew uninstall --cask claude-code; then
             track_removal "Claude Code CLI (Homebrew cask)" "success"
         else
             warn "Failed to uninstall claude-code cask"
@@ -398,6 +418,8 @@ main() {
         fi
         echo ""
     fi
+
+    setup_sudo
     
     # Progress tracking
     TOTAL_STEPS=12
@@ -472,7 +494,6 @@ main() {
 
     echo ""
     echo "${GREEN}Uninstall complete!${RESET}"
-    echo "${YELLOW}Note: Your .zshrc was backed up with a timestamp${RESET}"
 }
 
 main "$@"
