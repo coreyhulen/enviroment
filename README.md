@@ -152,7 +152,7 @@ The uninstaller asks for confirmation (Homebrew may also ask for your administra
   - Workspace 4: Obsidian
   - Workspace 6: iTerm2, VS Code
   - Workspace 8: Zoom, Teams, Blender (floating), Adobe Acrobat
-  - Workspace 10: Windows App, Claude Desktop
+  - Workspace 10: Windows App, Claude Desktop, Grok Bot
   - Always floating: Finder, 1Password
 
 ## Repository Layout

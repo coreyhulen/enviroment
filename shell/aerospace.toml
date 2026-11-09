@@ -119,6 +119,11 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.anthropic.claudefordesktop'
     run = 'move-node-to-workspace 10'
 
+# Force Grok Bot to always start on workspace 10
+[[on-window-detected]]
+    if.app-id = 'com.anysphere.sand'
+    run = 'move-node-to-workspace 10'
+
 # Make Finder windows always float
 [[on-window-detected]]
     if.app-id = 'com.apple.finder'
