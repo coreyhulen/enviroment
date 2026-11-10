@@ -112,6 +112,14 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'org.blenderfoundation.blender'
     run = ['move-node-to-workspace 8', 'layout floating']
 
+[[on-window-detected]]
+    if.app-id = 'com.apple.dt.Xcode'
+    run = ['move-node-to-workspace 8', 'layout floating']
+
+[[on-window-detected]]
+    if.app-id = 'com.apple.iphonesimulator'
+    run = ['move-node-to-workspace 8', 'layout floating']
+
 # Force Adobe Acrobat to always start on workspace 8
 [[on-window-detected]]
     if.app-id = 'com.adobe.Acrobat.Pro'
@@ -122,15 +130,15 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.microsoft.rdc.macos'
     run = 'move-node-to-workspace 10'
 
-# Force Claude Desktop to always start on workspace 10
+# Force Claude Desktop to always start on workspace 9
 [[on-window-detected]]
     if.app-id = 'com.anthropic.claudefordesktop'
-    run = 'move-node-to-workspace 10'
+    run = 'move-node-to-workspace 9'
 
-# Force Grok Bot to always start on workspace 10
+# Force Grok Bot to always start on workspace 9
 [[on-window-detected]]
     if.app-id = 'com.anysphere.sand'
-    run = 'move-node-to-workspace 10'
+    run = 'move-node-to-workspace 9'
 
 # Make Finder windows always float
 [[on-window-detected]]
