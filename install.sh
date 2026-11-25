@@ -19,6 +19,7 @@ FAILED_ITEMS=""
 # Package lists
 BREW_PACKAGES="wget go node tmux protobuf neovim ripgrep fd starship zsh-autosuggestions zsh-syntax-highlighting eza zoxide gh imagemagick awscli uv mas"
 BREW_CASKS="iterm2 nikitabobko/tap/aerospace font-jetbrains-mono-nerd-font karabiner-elements obsidian gimp blender visual-studio-code expressvpn arduino-ide docker-desktop inkscape"
+BLENDER_MCP_ADDON_URL="https://raw.githubusercontent.com/ahujasid/blender-mcp/main/addon.py"
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
@@ -553,9 +554,8 @@ setup_mcp_servers() {
     add_mcp() {
         local name="$1"
         shift
-        # Remove existing entry first to make this idempotent
         claude mcp remove "$name" -s user 2>/dev/null || true
-        if claude mcp add "$name" -s user -- "$@" 2>/dev/null; then
+        if claude mcp add "$name" -s user "$@" 2>/dev/null; then
             track_installation "MCP: $name" "success"
         else
             warn "Failed to add MCP server: $name"
@@ -564,12 +564,13 @@ setup_mcp_servers() {
         fi
     }
 
-    add_mcp "seq-server"        npx -y @modelcontextprotocol/server-sequential-thinking
-    add_mcp "codex-native"      codex mcp-server
-    add_mcp "fetch-server"      uvx mcp-server-fetch
-    add_mcp "filesystem-server" npx -y @modelcontextprotocol/server-filesystem "$HOME"
-    add_mcp "chrome-devtools"   npx -y chrome-devtools-mcp
-    add_mcp "memory"            npx -y @modelcontextprotocol/server-memory
+    add_mcp "seq-server"        -- npx -y @modelcontextprotocol/server-sequential-thinking
+    add_mcp "codex-native"      -- codex mcp-server
+    add_mcp "fetch-server"      -- uvx mcp-server-fetch
+    add_mcp "filesystem-server" -- npx -y @modelcontextprotocol/server-filesystem "$HOME"
+    add_mcp "chrome-devtools"   -- npx -y chrome-devtools-mcp
+    add_mcp "memory"            -- npx -y @modelcontextprotocol/server-memory
+    add_mcp "blender"           -e DISABLE_TELEMETRY=true -- uvx mcp-for-blender
 
     # Drop MCP servers that older versions of this script registered
     for name in gemini-cli postgres-server; do
@@ -581,6 +582,81 @@ setup_mcp_servers() {
     else
         warn "$MCP_FAILED MCP server(s) failed to add"
     fi
+}
+
+setup_blender_mcp_addon() {
+    info "Installing the MCP for Blender add-on..."
+
+    if ! command_exists blender; then
+        warn "Blender not found. Skipping the MCP for Blender add-on."
+        track_installation "Blender MCP add-on" "failed"
+        return 1
+    fi
+
+    if pgrep -xq Blender; then
+        warn "Blender is running. Quit it and re-run the installer to set up the MCP for Blender add-on."
+        track_installation "Blender MCP add-on" "failed"
+        return 1
+    fi
+
+    local workdir
+    workdir=$(mktemp -d)
+
+    if ! curl -fsSL "$BLENDER_MCP_ADDON_URL" -o "$workdir/blender_mcp.py"; then
+        warn "Failed to download the MCP for Blender add-on"
+        track_installation "Blender MCP add-on" "failed"
+        rm -rf "$workdir"
+        return 1
+    fi
+
+    cat > "$workdir/enable_addon.py" <<'EOF'
+import os
+import sys
+
+import addon_utils
+import bpy
+
+addon_path = sys.argv[sys.argv.index("--") + 1]
+user_dir = bpy.utils.resource_path("USER")
+versions_dir = os.path.dirname(user_dir)
+
+
+def has_saved_prefs(version_dir):
+    return os.path.isfile(os.path.join(version_dir, "config", "userpref.blend"))
+
+
+older_versions_with_prefs = [
+    name for name in (os.listdir(versions_dir) if os.path.isdir(versions_dir) else [])
+    if os.path.join(versions_dir, name) != user_dir and has_saved_prefs(os.path.join(versions_dir, name))
+]
+
+if not has_saved_prefs(user_dir) and older_versions_with_prefs:
+    print("BLENDER_MCP_RESULT migration-pending")
+else:
+    bpy.ops.preferences.addon_install(filepath=addon_path, overwrite=True)
+    addon_utils.enable("blender_mcp", default_set=True)
+    bpy.ops.wm.save_userpref()
+    print("BLENDER_MCP_RESULT " + ("enabled" if addon_utils.check("blender_mcp")[1] else "failed"))
+EOF
+
+    local result
+    result=$(BLENDERMCP_NO_UPDATE_CHECK=1 blender --background --python "$workdir/enable_addon.py" -- "$workdir/blender_mcp.py" 2>&1 |
+        sed -n 's/^BLENDER_MCP_RESULT //p')
+    rm -rf "$workdir"
+
+    case "$result" in
+        enabled)
+            track_installation "Blender MCP add-on" "success"
+            ;;
+        migration-pending)
+            warn "Open Blender once and import your previous settings, then re-run the installer to add the MCP add-on."
+            track_installation "Blender MCP add-on" "failed"
+            ;;
+        *)
+            warn "Failed to install the MCP for Blender add-on"
+            track_installation "Blender MCP add-on" "failed"
+            ;;
+    esac
 }
 
 setup_dev_paths() {
@@ -699,6 +775,7 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up Claude Code MCP servers..."
     setup_mcp_servers
+    setup_blender_mcp_addon
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Setting up development paths..."

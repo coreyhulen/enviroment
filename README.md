@@ -51,6 +51,7 @@ Registered at user scope with `claude mcp add`:
 - `filesystem-server` - Filesystem access scoped to `$HOME`
 - `chrome-devtools` - Chrome DevTools automation
 - `memory` - Persistent knowledge-graph memory
+- `blender` - Live Blender control via [MCP for Blender](https://github.com/ahujasid/blender-mcp) (`uvx mcp-for-blender`, telemetry disabled). The installer also downloads its add-on and enables it in Blender
 
 ### Shell Configuration
 - **Zsh** configuration with vim key bindings
@@ -96,7 +97,7 @@ The installer will:
 9. Configure tmux and install TPM
 10. Install iTerm2 settings (backing up existing preferences)
 11. Install the AeroSpace configuration
-12. Register Claude Code MCP servers
+12. Register Claude Code MCP servers and install the MCP for Blender add-on
 13. Create development directories under `~/Projects`
 14. Apply macOS preferences and git settings
 15. Install the Karabiner configuration

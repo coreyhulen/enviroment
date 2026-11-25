@@ -167,6 +167,20 @@ uninstall_homebrew_completely() {
     info "Homebrew uninstallation completed"
 }
 
+remove_blender_mcp_addon() {
+    local found=false
+    for addon in "$HOME/Library/Application Support/Blender"/*/scripts/addons/blender_mcp.py; do
+        [ -e "$addon" ] || continue
+        found=true
+        if rm -f "$addon"; then
+            track_removal "Blender MCP add-on" "success"
+        else
+            track_removal "Blender MCP add-on" "failed"
+        fi
+    done
+    [ "$found" = true ] || track_removal "Blender MCP add-on (not installed)" "success"
+}
+
 remove_vim() {
     info "Uninstalling Neovim LazyVim configuration"
     
@@ -436,6 +450,7 @@ main() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Homebrew packages..."
     remove_homebrew
+    remove_blender_mcp_addon
 
     CURRENT_STEP=$((CURRENT_STEP + 1))
     echo "${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} Removing Claude Code CLI..."
